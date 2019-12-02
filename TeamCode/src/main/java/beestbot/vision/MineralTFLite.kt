@@ -1,14 +1,14 @@
 package beestbot.vision
 
+import beestbot.state.SensorSignals
 import org.firstinspires.ftc.robotcore.external.ClassFactory
 import org.firstinspires.ftc.robotcore.external.tfod.Recognition
 import org.firstinspires.ftc.robotcore.external.tfod.TFObjectDetector
-import beestbot.state.GoldPositions
 
 /**
  * Created by David Lukens on 10/31/2018.
  */
-class TFLite(private val master: MasterVision) {
+class MineralTFLite(private val mineralMaster: MineralMasterVision) {
     companion object {
         private const val TFOD_MODEL_ASSET = "RoverRuckus.tflite"
         private const val LABEL_GOLD_MINERAL = "Gold Mineral"
@@ -16,17 +16,17 @@ class TFLite(private val master: MasterVision) {
     }
 
     private var tfod: TFObjectDetector? = null
-    private val tfodMoniterViewId = master.hMap.appContext.resources.getIdentifier("tfodMonitorViewId", "id", master.hMap.appContext.packageName)
+    private val tfodMoniterViewId = mineralMaster.hMap.appContext.resources.getIdentifier("tfodMonitorViewId", "id", mineralMaster.hMap.appContext.packageName)
     private val parameters = TFObjectDetector.Parameters(tfodMoniterViewId)
 
     fun init() {
         if (tfod == null) {
-            tfod = ClassFactory.getInstance().createTFObjectDetector(parameters, master.vuforiaLocalizer)
+            tfod = ClassFactory.getInstance().createTFObjectDetector(parameters, mineralMaster.vuforiaLocalizer)
             tfod?.loadModelFromAsset(TFOD_MODEL_ASSET, LABEL_GOLD_MINERAL, LABEL_SILVER_MINERAL)
         }
     }
 
-    var lastKnownSampleOrder = GoldPositions.UNKNOWN
+    var lastKnownSampleOrder = SensorSignals.UNKNOWN
 
     internal fun updateSampleOrder() {
         if (tfod != null) {
@@ -36,6 +36,8 @@ class TFLite(private val master: MasterVision) {
             var first_score = 0f
             var second_score = 0f
             if (updatedRecognitions != null) {
+
+                // sort according to confidence
                 if (updatedRecognitions.size > 2) {
                     val sortedList = updatedRecognitions.sortedWith(compareByDescending({ it.confidence }))
 //                    sortedList = sortedList.drop(2)
@@ -48,6 +50,8 @@ class TFLite(private val master: MasterVision) {
                         }
                     }
                 }
+
+                // selecting 2 objects with greatest confidence
                 for (item in updatedRecognitions) {
                     if (item.confidence >= second_score) {
                         sorted.add(item)
@@ -67,38 +71,38 @@ class TFLite(private val master: MasterVision) {
                         else
                             silverMineral2X = recognition.left.toInt()
                     }
-                    when (master.tfLiteAlgorithm) {
-                        MasterVision.TFLiteAlgorithm.INFER_NONE -> if (goldMineralX != null && silverMineral1X != null && silverMineral2X != null)
+                    when (mineralMaster.tfLiteAlgorithm) {
+                        MineralMasterVision.TFLiteAlgorithm.INFER_NONE -> if (goldMineralX != null && silverMineral1X != null && silverMineral2X != null)
                             if (sorted.size == 3)
                                 lastKnownSampleOrder =
                                         if (goldMineralX < silverMineral1X && goldMineralX < silverMineral2X)
-                                            GoldPositions.LEFT
+                                            SensorSignals.STONE
                                         else if (goldMineralX > silverMineral1X && goldMineralX > silverMineral2X)
-                                            GoldPositions.RIGHT
+                                            SensorSignals.NOTHING
                                         else
-                                            GoldPositions.CENTER
-                        MasterVision.TFLiteAlgorithm.INFER_LEFT -> {
+                                            SensorSignals.SKYSTONE
+                        MineralMasterVision.TFLiteAlgorithm.INFER_LEFT -> {
                             if(sorted.size == 2) {
                                 if (goldMineralX == null)
-                                    lastKnownSampleOrder = GoldPositions.LEFT
+                                    lastKnownSampleOrder = SensorSignals.STONE
                                 else if (silverMineral1X != null)
                                     lastKnownSampleOrder =
                                             if (goldMineralX < silverMineral1X)
-                                                GoldPositions.CENTER
+                                                SensorSignals.SKYSTONE
                                             else
-                                                GoldPositions.RIGHT
+                                                SensorSignals.NOTHING
                             }
                         }
-                        MasterVision.TFLiteAlgorithm.INFER_RIGHT -> {
+                        MineralMasterVision.TFLiteAlgorithm.INFER_RIGHT -> {
                             if(sorted.size == 2) {
                                 if (goldMineralX == null)
-                                    lastKnownSampleOrder = GoldPositions.RIGHT
+                                    lastKnownSampleOrder = SensorSignals.NOTHING
                                 else if (silverMineral1X != null)
                                     lastKnownSampleOrder =
                                             if (goldMineralX < silverMineral1X)
-                                                GoldPositions.LEFT
+                                                SensorSignals.STONE
                                             else
-                                                GoldPositions.CENTER
+                                                SensorSignals.SKYSTONE
                             }
                         }
                     }

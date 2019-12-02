@@ -3,13 +3,14 @@ package beestbot.mode;
 
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
-import beestbot.state.Facing;
+import beestbot.mode.AbsurdMode.HankesAbsurdIntelligence;
+import beestbot.state.Side;
 import beestbot.state.State;
 import beestbot.state.Team;
 import beestbot.util.Configuration;
 
-@TeleOp(name = "FlintMode", group = "TeleOp")
-public class FlintMode extends AbsurdIntelligence {
+@TeleOp(name = "FlintsControlMode", group = "TeleOp")
+public class FlintsControlMode extends HankesAbsurdIntelligence {
 
     @Override
     public void setTeam() {
@@ -17,8 +18,8 @@ public class FlintMode extends AbsurdIntelligence {
     } // TODO: subsitude this with a new value
 
     @Override
-    public void setFacing() {
-        Configuration.setFacing(Facing.WALLBREAKER);
+    public void setSide() {
+        Configuration.setSide(Side.FOUNDATION);
     } // TODO: subsitude this with a new value
 
     @Override

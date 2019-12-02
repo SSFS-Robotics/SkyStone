@@ -27,10 +27,9 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package beestbot.mode;
+package beestbot.mode.AbsurdMode;
 
 import com.qualcomm.robotcore.eventloop.opmode.Disabled;
-import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
 import java.util.ArrayList;
@@ -38,10 +37,10 @@ import java.util.ArrayList;
 import beestbot.io.FileSerialization;
 import beestbot.io.GamepadManager;
 import beestbot.motion.MotionManager;
-import beestbot.state.GoldPositions;
+import beestbot.state.SensorSignals;
 import beestbot.state.State;
 import beestbot.util.Configuration;
-import beestbot.vision.VisionManager;
+import beestbot.vision.SkyStoneVsionManager;
 
 /**
  * This 2018-2019 OpMode illustrates the basics of using the TensorFlow Object Detection API to
@@ -53,48 +52,14 @@ import beestbot.vision.VisionManager;
  * IMPORTANT: In order to use this OpMode, you need to obtain your own Vuforia license key as
  * is explained below.
  */
-@TeleOp(name = "AbsurdIntelligence", group = "OpMode")
+@TeleOp(name = "HankesAbsurdIntelligence", group = "OpMode")
 @Disabled
 // TODO: WARNING - When there is an issue updating the opMode, try: Build->Clean Project
-public class AbsurdIntelligence extends OpMode {
-    // Declare OpMode members.
-    // 1000ticks = 1sec
-
-
-    // variables in the father class
-    // time = 0.0;
-    // gamepad1;
-    // gamepad2;
-    // telemetry;
-    // hardwareMap;
-    // startTime;
-
-    // functions in the father class
-    // OpMode()
-    // init() This method will be called once when the INIT button is pressed.
-    // init_loop() This method will be called repeatedly once when the INIT button is pressed.
-    // start() This method will be called once when this op mode is running.
-    // loop() This method will be called repeatedly in a loop while this op mode is running.
-    // stop() This method will be called when this op mode is first disabled
-    // requestOpModeStop() Shutdown the current OpMode
-    // resetStartTime() set time to 0
-    // internalPreInit(); internalPostInitLoop(); internalPostLoop();
+public class HankesAbsurdIntelligence extends BeestAbsurdMode {
 
     private MotionManager motionManager;
-    private VisionManager visionManager;
-    private GamepadManager gamepadManager;
-    private ArrayList<GoldPositions> positionStream = new ArrayList<>();
-    private String debugMessage = "";
+    private ArrayList<SensorSignals> positionStream = new ArrayList<>();
 
-    public void setTeam() {
-        throw new UnsupportedOperationException("setTeam() method not implemented!");
-    }
-    public void setFacing() {
-        throw new UnsupportedOperationException("setTemprename() method not implemented!");
-    }
-    public void setState() {
-        throw new UnsupportedOperationException("setState() method not implemented!");
-    }
 
     @Override
     public void init() {
@@ -104,15 +69,17 @@ public class AbsurdIntelligence extends OpMode {
         super.msStuckDetectLoop     = 5000;
         super.msStuckDetectStop     = 10000;
 
+        // initiate modes based on specific settings
         setTeam();
-        setFacing();
+        setSide();
         setState();
 
-        visionManager = new VisionManager(hardwareMap, Configuration.INFER, Configuration.flashLight);
+//        mineralVisionManager = new MineralVisionManager(hardwareMap, Configuration.INFER, Configuration.flashLight);
+        Configuration.visionManager = new SkyStoneVsionManager(hardwareMap, Configuration.INFER, Configuration.flashLight);
         motionManager = new MotionManager(telemetry, hardwareMap);
-        gamepadManager = new GamepadManager(telemetry);
-        visionManager.start();
-        telemetry.addData("DEBUG", debugMessage);
+        Configuration.gamepadManager = new GamepadManager();
+        Configuration.visionManager.enable();
+        telemetry.addData("DEBUG", Configuration.debugMessage);
         telemetry.update();
     }
 
@@ -120,40 +87,40 @@ public class AbsurdIntelligence extends OpMode {
     public void init_loop() {
         long lStartTime = System.currentTimeMillis();
 
-        // update [GoldPositions laskKnown]
-        GoldPositions positions = visionManager.fetch();
+        // update [SensorSignals laskKnown]
+        SensorSignals positions = Configuration.visionManager.fetch();
         if (positionStream.size() > Configuration.maximumStream)
             positionStream.remove(0);
         positionStream.add(positions);
-        GoldPositions _ = calculateLastKnown(positionStream);
-        if (_ != GoldPositions.UNKNOWN) {
-            Configuration.setGoldPosition(_);
-            telemetry.addData("Sensor", "randomPosition = %s", Configuration.getGoldPosition());
+        SensorSignals _ = calculateLastKnown(positionStream);
+        if (_ != SensorSignals.UNKNOWN) {
+            Configuration.setSensorSignal(_);
+            telemetry.addData("Sensor", "randomPosition = %s", Configuration.getSensorSignal());
         }
 
         long timeElapsed = System.currentTimeMillis() - lStartTime;
         telemetry.addData("Record", "timeElapsed = %d", timeElapsed);
-        telemetry.addData("DEBUG", debugMessage);
+        telemetry.addData("DEBUG", Configuration.debugMessage);
         telemetry.update();
     }
 
     @Override
     public void start() {
-//        if (Configuration.getGoldPosition() == GoldPositions.UNKNOWN) throw new InvalidParameterException("GoldPositions cannot be 'UNKNOWN'");
-        visionManager.disable();
+//        if (Configuration.getSensorSignal() == SensorSignals.UNKNOWN) throw new InvalidParameterException("SensorSignals cannot be 'UNKNOWN'");
+        Configuration.visionManager.disable();
         resetStartTime();
         if (Configuration.getState() == State.AUTONOMOUS) {
-            debugMessage = debugMessage + "Getting file in " + Configuration.getFileName() + "; ";
+            Configuration.debugMessage = Configuration.debugMessage + "Getting file in " + Configuration.getFileName() + "; ";
 
             Object _ = FileSerialization.loadInternal(hardwareMap.appContext, Configuration.getFileName(), telemetry);
             if (_ != null) {
                 Configuration.gamepadsTimeStream = (ArrayList<GamepadManager>) _;
-                debugMessage = debugMessage + "File != null; ";
+                Configuration.debugMessage = Configuration.debugMessage + "File != null; ";
             } else {
-                debugMessage = debugMessage + "File == null; Object is null; ";
+                Configuration.debugMessage = Configuration.debugMessage + "File == null; Object is null; ";
             }
         }
-        telemetry.addData("DEBUG", debugMessage);
+        telemetry.addData("DEBUG", Configuration.debugMessage);
         telemetry.update();
     }
 
@@ -161,18 +128,18 @@ public class AbsurdIntelligence extends OpMode {
     public void loop() {
         telemetry.addData("Record", "timeElapsed = %f", time);
         if (Configuration.getState() == State.CONTROL) {
-            gamepadManager.update(gamepad1, gamepad2);
+            Configuration.gamepadManager.update(gamepad1, gamepad2);
         } else if (Configuration.getState() == State.RECORDING) {
-            gamepadManager.update(gamepad1, gamepad2);
-            Configuration.gamepadsTimeStream.add(gamepadManager.clone());
+            Configuration.gamepadManager.update(gamepad1, gamepad2);
+            Configuration.gamepadsTimeStream.add(Configuration.gamepadManager.clone());
         } else if (Configuration.getState() == State.AUTONOMOUS && Configuration.gamepadsTimeStream.size() >0) {
             telemetry.addData("Running Record:", Configuration.getFileName());
-            gamepadManager = Configuration.gamepadsTimeStream.get(0);
+            Configuration.gamepadManager = Configuration.gamepadsTimeStream.get(0);
             Configuration.gamepadsTimeStream.remove(0);
         }
-        motionManager.updateWithException(gamepadManager);
+        motionManager.updateWithException(Configuration.gamepadManager);
 //        motionManager.update(gamepadManager);
-        telemetry.addData("DEBUG", debugMessage);
+        telemetry.addData("DEBUG", Configuration.debugMessage);
         telemetry.update();
     }
 
@@ -180,19 +147,19 @@ public class AbsurdIntelligence extends OpMode {
     public void stop() {
         if (Configuration.getState() == State.RECORDING) {
             boolean successful = FileSerialization.saveInternal(hardwareMap.appContext, Configuration.getFileName(), Configuration.gamepadsTimeStream, telemetry);
-            debugMessage = debugMessage + "Configuration saved in " + Configuration.getFileName() + "; Successful = " + Boolean.toString(successful) + "; ";
+            Configuration.debugMessage = Configuration.debugMessage + "Configuration saved in " + Configuration.getFileName() + "; Successful = " + Boolean.toString(successful) + "; ";
 //            String s = FileSerialization.readInternal(hardwareMap.appContext, Configuration.getFileName(), telemetry);
 //            FileSerialization.setClipboard(hardwareMap.appContext, s);
         }
         telemetry.addData("Time", "time = %f", time);
-        telemetry.addData("DEBUG", debugMessage);
+        telemetry.addData("DEBUG", Configuration.debugMessage);
         telemetry.update();
     }
 
-    private static GoldPositions calculateLastKnown(ArrayList<GoldPositions> positionStream) {
-        for (GoldPositions pos: positionStream) {
+    private static SensorSignals calculateLastKnown(ArrayList<SensorSignals> positionStream) {
+        for (SensorSignals pos: positionStream) {
             if (positionStream.get(0) != pos) {
-                return GoldPositions.UNKNOWN;
+                return SensorSignals.UNKNOWN;
             }
         }
         return positionStream.get(0);

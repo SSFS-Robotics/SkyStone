@@ -2,13 +2,14 @@ package beestbot.mode;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 
+import beestbot.mode.AbsurdMode.HankesAbsurdIntelligence;
+import beestbot.state.Side;
 import beestbot.util.Configuration;
-import beestbot.state.Facing;
 import beestbot.state.State;
 import beestbot.state.Team;
 
 @Autonomous(name = "SaveWallfacerKokiAutoNext", group = "Save")
-public class SaveWallfacerKokiAutoNext extends AbsurdIntelligence {
+public class SaveWallfacerKokiAutoNext extends HankesAbsurdIntelligence {
 
     @Override
     public void setTeam() {
@@ -16,8 +17,8 @@ public class SaveWallfacerKokiAutoNext extends AbsurdIntelligence {
     }
 
     @Override
-    public void setFacing() {
-        Configuration.setFacing(Facing.WALLFACER);
+    public void setSide() {
+        Configuration.setSide(Side.Quarry);
     }
 
     @Override

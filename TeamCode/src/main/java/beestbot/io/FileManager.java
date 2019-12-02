@@ -1,10 +1,13 @@
 package beestbot.io;
 
 import android.content.Context;
+import android.os.Environment;
 import android.util.Log;
 
 import java.io.BufferedReader;
+import java.io.File;
 import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -48,5 +51,35 @@ public class FileManager {
             Log.e("login activity", "Can not read file: " + e.toString());
         }
         return new ArrayList<String>(Arrays.asList(ret.split(split)));
+    }
+    public static void copyFiletoExternalStorage(Context context, int resourceId, String resourceName){
+        String pathSDCard = Environment.getExternalStorageDirectory() + "/" + resourceName;
+
+        File file = new File(pathSDCard);
+        if (file.exists()) {
+            // file already exist
+            return;
+        }
+
+        try{
+            InputStream in = context.getResources().openRawResource(resourceId);
+            FileOutputStream out = null;
+            out = new FileOutputStream(pathSDCard);
+            byte[] buff = new byte[1024];
+            int read = 0;
+            try {
+                while ((read = in.read(buff)) > 0) {
+                    out.write(buff, 0, read);
+                }
+            } finally {
+                in.close();
+                out.close();
+            }
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
     }
 }

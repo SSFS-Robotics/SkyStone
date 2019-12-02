@@ -9,16 +9,15 @@ import org.firstinspires.ftc.robotcore.external.navigation.VuforiaLocalizer
  * Created by David Lukens on 10/31/2018.
  */
 
-class MasterVision(private val parameters: VuforiaLocalizer.Parameters, val hMap: HardwareMap, val useFlash:Boolean, val tfLiteAlgorithm: TFLiteAlgorithm) : Thread() {
+class MineralMasterVision(private val parameters: VuforiaLocalizer.Parameters, val hMap: HardwareMap, val useFlash:Boolean, val tfLiteAlgorithm: TFLiteAlgorithm) : Thread() {
     var vuforiaLocalizer: VuforiaLocalizer? = null
-    val tfLite = TFLite(this)
+    val tfLite = MineralTFLite(this)
 
     enum class TFLiteAlgorithm{
         INFER_LEFT,
         INFER_RIGHT,
         INFER_NONE
     }
-
 
     fun init() {
         if (vuforiaLocalizer == null)
@@ -53,6 +52,6 @@ class MasterVision(private val parameters: VuforiaLocalizer.Parameters, val hMap
     }
 
     init { // called right after constructor
-        start() // start the thread
+        start() // enable the thread
     }
 }

@@ -16,7 +16,7 @@ public class Configuration {
      */
     public static final String FRONT_LEFT_MOTOR = "dm1";
     public static final String FRONT_RIGHT_MOTOR = "dm0";
-    public static final String BACK_LEFT_MOTOR = "um3";
+    public static final String BACK_LEFT_MOTOR = "dm2";// used to be um3, now dm2
     public static final String BACK_RIGHT_MOTOR = "dm3";
     public static final String ARM_LEFT_MOTOR = "um1";
     public static final String ARM_RIGHT_MOTOR = "um2";

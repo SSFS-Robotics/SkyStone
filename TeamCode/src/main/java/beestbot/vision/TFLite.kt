@@ -1,9 +1,9 @@
 package beestbot.vision
 
+import beestbot.state.GoldPositions
 import org.firstinspires.ftc.robotcore.external.ClassFactory
 import org.firstinspires.ftc.robotcore.external.tfod.Recognition
 import org.firstinspires.ftc.robotcore.external.tfod.TFObjectDetector
-import beestbot.state.GoldPositions
 
 /**
  * Created by David Lukens on 10/31/2018.

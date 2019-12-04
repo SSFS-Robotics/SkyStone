@@ -32,15 +32,9 @@ import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
-import java.util.ArrayList;
-
-import beestbot.io.FileSerialization;
 import beestbot.io.GamepadManager;
 import beestbot.motion.MotionManager;
-import beestbot.state.SensorSignals;
-import beestbot.state.State;
 import beestbot.util.Configuration;
-import beestbot.vision.SkyStoneVsionManager;
 
 /**
  * This 2018-2019 OpMode illustrates the basics of using the TensorFlow Object Detection API to
@@ -90,6 +84,9 @@ public class BeestAbsurdMode extends OpMode {
     public void setState() {
         throw new UnsupportedOperationException("setState() method not implemented!");
     }
+    public void setVisionManager() {
+        throw new UnsupportedOperationException("setVisionManager() method not implemented!");
+    }
 
     @Override
     public void init() {
@@ -103,9 +100,10 @@ public class BeestAbsurdMode extends OpMode {
         setTeam();
         setSide();
         setState();
+        setVisionManager();
 
 //        mineralVisionManager = new MineralVisionManager(hardwareMap, Configuration.INFER, Configuration.flashLight);
-        Configuration.visionManager = new SkyStoneVsionManager(hardwareMap, Configuration.INFER, Configuration.flashLight);
+//        Configuration.visionManager = new SkyStoneVsionManager(hardwareMap, Configuration.INFER, Configuration.flashLight);
         motionManager = new MotionManager(telemetry, hardwareMap);
         Configuration.gamepadManager = new GamepadManager();
         Configuration.visionManager.enable();

@@ -1,30 +1,20 @@
 package beestbot.vision;
 
-import android.graphics.Bitmap;
-
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.vuforia.CameraDevice;
-import com.vuforia.Image;
 import com.vuforia.PIXEL_FORMAT;
 import com.vuforia.Vuforia;
 
 import org.firstinspires.ftc.robotcore.external.ClassFactory;
-import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
 import org.firstinspires.ftc.robotcore.external.navigation.VuforiaLocalizer;
 import org.firstinspires.ftc.robotcore.external.tfod.Recognition;
 import org.firstinspires.ftc.robotcore.external.tfod.TFObjectDetector;
-import org.opencv.android.Utils;
-import org.opencv.core.CvType;
-import org.opencv.core.Mat;
-import org.opencv.core.Size;
-import org.opencv.imgproc.Imgproc;
 
 import java.util.List;
 
-import beestbot.io.FileManager;
 import beestbot.state.SensorSignals;
 
-public class SkyStoneVsionManager extends VisionManager {
+public class SkyStoneVsionManager extends NullVsionManager {
     private static final String TFOD_MODEL_ASSET = "Skystone.tflite";
     private static final String LABEL_FIRST_ELEMENT = "Stone";
     private static final String LABEL_SECOND_ELEMENT = "Skystone";
@@ -36,15 +26,11 @@ public class SkyStoneVsionManager extends VisionManager {
     private boolean VUFORIA_SCREEN = false;
 
     public SkyStoneVsionManager(HardwareMap hardwareMap, MineralMasterVision.TFLiteAlgorithm infer, boolean useFlash) {
+        super(hardwareMap);
         this.useFlash = useFlash;
 
         setupVuforia(hardwareMap);
         setupTensorflow(hardwareMap);
-        setupOpenCV(hardwareMap);
-    }
-
-    private void setupOpenCV(HardwareMap hardwareMap) {
-        FileManager.copyFiletoExternalStorage(hardwareMap.appContext, hardwareMap.appContext.getResources().getIdentifier("libopencvnative.so", "raw", hardwareMap.appContext.getPackageName()), "FIRST/libopencvnative.so");
     }
 
     private void setupVuforia(HardwareMap hardwareMap) {

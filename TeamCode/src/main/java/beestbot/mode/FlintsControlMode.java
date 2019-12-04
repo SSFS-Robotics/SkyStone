@@ -8,6 +8,8 @@ import beestbot.state.Side;
 import beestbot.state.State;
 import beestbot.state.Team;
 import beestbot.util.Configuration;
+import beestbot.vision.NullVsionManager;
+import beestbot.vision.SkyStoneVsionManager;
 
 @TeleOp(name = "FlintsControlMode", group = "TeleOp")
 public class FlintsControlMode extends HankesAbsurdIntelligence {
@@ -25,5 +27,10 @@ public class FlintsControlMode extends HankesAbsurdIntelligence {
     @Override
     public void setState() {
         Configuration.setState(State.CONTROL);
+    }
+    @Override
+    public void setVisionManager() {
+//        mineralVisionManager = new MineralVisionManager(hardwareMap, Configuration.INFER, Configuration.flashLight);
+        Configuration.visionManager = new NullVsionManager(hardwareMap);
     }
 }

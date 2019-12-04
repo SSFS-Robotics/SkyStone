@@ -2,13 +2,13 @@ package beestbot.vision;
 
 import beestbot.state.SensorSignals;
 
-public abstract class VisionManager {
-    private MineralMasterVision vision;
+public interface VisionManager {
+    MineralMasterVision vision = null;
 
-    public abstract void enable();
+    void enable();
 
-    public abstract SensorSignals fetch();
+    SensorSignals fetch();
 
-    public abstract void disable();
+    void disable();
 }
 

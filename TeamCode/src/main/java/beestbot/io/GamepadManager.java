@@ -11,6 +11,7 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
+import beestbot.state.Inverse;
 import beestbot.util.Configuration;
 
 public class GamepadManager implements Serializable, Cloneable {
@@ -18,15 +19,15 @@ public class GamepadManager implements Serializable, Cloneable {
     /*
         MOTOR
      */
-    public double forceFrontLeftMotor;
-    public double forceFrontRightMotor;
-    public double forceBackLeftMotor;
-    public double forceBackRightMotor;
+    public double forceFrontLeftMotor = 0;
+    public double forceFrontRightMotor = 0;
+    public double forceBackLeftMotor = 0;
+    public double forceBackRightMotor = 0;
 
-    public double forceArmLeftMotor;
-    public double forceArmRightMotor;
+    public double forceArmLeftMotor; // deprecated
+    public double forceArmRightMotor; // deprecated
 
-    public double forceLiftMotor;
+    public double forceLiftMotor = 0;
 
 //    private int positionArmMotor;
 //    private boolean ifArmEncoder = false;
@@ -35,99 +36,67 @@ public class GamepadManager implements Serializable, Cloneable {
     /*
         SERVO
      */
-    public float forceFrontLeftServo;
-    public float forceFrontRightServo;
+    public float forceFrontLeftServo = 0f;
+    public float forceFrontRightServo = 0f;
     public float forceClipServo = -1.0f;
-    public float forceTouchServo = 0.5f;
+    public float forceTouchServo; // deprecated
 
     public GamepadManager() {
     }
 
+    public void inverselyUpdate(Gamepad gp1, Gamepad gp2) {
+        // do some operation
+        if (Configuration.inverse == Inverse.X_AXIS) {
+            gp1.left_stick_x = -gp1.left_stick_x;
+            gp1.right_stick_x = -gp1.right_stick_x;
+            gp2.left_stick_x = -gp2.left_stick_x;
+            gp2.right_stick_x = -gp2.right_stick_x;
+        } else {
+            throw new UnsupportedOperationException("inverselyUpdate() method not implemented for additional Inverse!");
+        }
+
+        update(gp1, gp2);
+    }
+
     public void update(Gamepad gp1, Gamepad gp2) {
+        /*
+            For wheels
+         */
+
         // when first gamepad is not controlling movement, second gamepad will take over
-        float LF = gp2.left_stick_y - gp2.left_stick_x - gp2.right_stick_x;
-        float RF = gp2.left_stick_y + gp2.left_stick_x + gp2.right_stick_x;
-        float LB = gp2.left_stick_y + gp2.left_stick_x - gp2.right_stick_x;
-        float RB = gp2.left_stick_y - gp2.left_stick_x + gp2.right_stick_x;
-        Float[] decMax = {Math.abs(LF), Math.abs(RF), Math.abs(LB), Math.abs(RB)};
-        List<Float> a = new ArrayList<>(Arrays.asList(decMax));
-        float max = Range.clip(Collections.max(a), 1f, Float.MAX_VALUE);
-        LF = (LF / max) * Configuration.ABSOLUTE_SPEED *0.6f;
-        RF = (RF / max) * Configuration.ABSOLUTE_SPEED *0.6f;
-        LB = (LB / max) * Configuration.ABSOLUTE_SPEED *0.6f;
-        RB = (RB / max) * Configuration.ABSOLUTE_SPEED *0.6f;
-        forceFrontLeftMotor = Range.clip(LF, -1f, 1f);
-        forceFrontRightMotor = -Range.clip(RF, -1f, 1f);
-        forceBackLeftMotor = Range.clip(LB, -1f, 1f);
-        forceBackRightMotor = -Range.clip(RB, -1f, 1f);
+        float LF_1 = (gp2.left_stick_y - gp2.left_stick_x - gp2.right_stick_x)*1.0f + (gp1.left_stick_y - gp1.left_stick_x - 0)*0.2f;
+        float RF_1 = (gp2.left_stick_y + gp2.left_stick_x + gp2.right_stick_x)*1.0f + (gp1.left_stick_y + gp1.left_stick_x + 0)*0.2f;
+        float LB_1 = (gp2.left_stick_y + gp2.left_stick_x - gp2.right_stick_x)*1.0f + (gp1.left_stick_y + gp1.left_stick_x - 0)*0.2f;
+        float RB_1 = (gp2.left_stick_y - gp2.left_stick_x + gp2.right_stick_x)*1.0f + (gp1.left_stick_y - gp1.left_stick_x + 0)*0.2f;
+        Float[] decMax_1 = new Float[]{Math.abs(LF_1), Math.abs(RF_1), Math.abs(LB_1), Math.abs(RB_1)};
+        List<Float> a_1 = new ArrayList<>(Arrays.asList(decMax_1));
+        float max_1 = Range.clip(Collections.max(a_1), 1f, Float.MAX_VALUE);
+        LF_1 = (LF_1 / max_1) * Configuration.ABSOLUTE_SPEED *0.6f;
+        RF_1 = (RF_1 / max_1) * Configuration.ABSOLUTE_SPEED *0.6f;
+        LB_1 = (LB_1 / max_1) * Configuration.ABSOLUTE_SPEED *0.6f;
+        RB_1 = (RB_1 / max_1) * Configuration.ABSOLUTE_SPEED *0.6f;
+
+        forceFrontLeftMotor = Range.clip(LF_1 , -1f, 1f);
+        forceFrontRightMotor = -Range.clip(RF_1, -1f, 1f);
+        forceBackLeftMotor = Range.clip(LB_1, -1f, 1f);
+        forceBackRightMotor = -Range.clip(RB_1, -1f, 1f);
+
 
         /*
             For lifting
          */
-        float lift = gp2.a?1.0f:0.0f;
-        float drop = gp2.b?1.0f:0.0f;
-        forceLiftMotor = Range.clip(-lift + drop, -0.4, 0.4);
-        //TODO: adjust sign
+        forceLiftMotor = Range.clip(gp1.right_stick_y * 0.2f, -1f, 1f);
 
         /*
-            For hand
+            For Two Side servos
          */
-//        float down = gp1.dpad_down?1.0f:0.0f;
-//        float up = gp1.dpad_up?1.0f:0.0f;
-//        forceArmLeftMotor = Range.clip(-down + up, -0.1, 0.1);
-//        forceArmRightMotor = -Range.clip(-down + up, -0.1, 0.1);
-//        if (!ifArmEncoder) {
-            float arm = gp1.left_stick_y;
-            forceArmLeftMotor = Range.clip(arm, -0.3, 0.3);
-            forceArmRightMotor = Range.clip(arm, -0.3, 0.3);
-//        } else {
-//            // TODO
-//        }
-//        if (gp1.a && !ifArmEncoder) {
-//            ifArmEncoder = true;
-//            positionArmMotor = 0;
-//        } else if (gp1.b && ifArmEncoder) {
-//            ifArmEncoder = false;
-//            positionArmMotor = 0;
-//        }
-        //TODO: adjust sign
+        forceFrontRightServo = clamp(gp1.left_trigger, 0f, 1f, 0.2f, 1.0f); // 1~0.2
+        forceFrontLeftServo = clamp(-gp1.left_trigger, -1f, 0f, 0.2f, 1.0f); // 0.2-1
 
         /*
-            For Servo
-            triggers: float 0 (not pressed), float 1 (pressed) - lower
-            bumpers: false (not pressed), true (pressed) - upper
+            For clips
          */
-//        float rollIn = (gp1.left_bumper || gp1.right_bumper)?1.0f:0.0f;
-//        float rollOut = Range.clip(gp1.left_trigger + gp1.right_trigger, -1, 1);
-//        forceFrontLeftServo = Range.clip(-rollOut + rollIn, -1, 1);
-//        forceFrontRightServo = Range.clip(-rollOut + rollIn, -1, 1);
-
-//        float rollInLeft = (gp1.left_bumper)?1.0f:0.0f;
-//        float rollInRight = (gp1.right_bumper)?1.0f:0.0f;
-//        float rollOutLeft = Range.clip(gp1.left_trigger, -1, 1);
-//        float rollOutRight = Range.clip(gp1.right_trigger, -1, 1);
-//        forceFrontLeftServo = Range.clip(-rollOutLeft + rollInLeft, -1, 1)/2.0f+0.5f; // (0, 0.5)
-//        forceFrontRightServo = -Range.clip(-rollOutRight + rollInRight, -1, 1)/2.0f+0.5f; // (0, 0.5)
-
-        if (gp1.x && !gp1.y) {
-            forceClipServo = -1.0f;
-        } else if (!gp1.x && gp1.y) {
-            forceClipServo = 0.7f;
-        }
-        forceClipServo = Range.clip(forceClipServo, -1.0f, 1.0f);
-
-        if (gp1.dpad_down && !gp1.dpad_up) {
-            forceTouchServo = 0f;
-        } else if (!gp1.dpad_down && gp1.dpad_up) {
-            forceTouchServo = 1f;
-        } else if ((gp1.dpad_left || gp1.dpad_right)&&(forceTouchServo != 0.5f)) {
-            forceTouchServo = 0.5f;
-        }
-//        forceTouchServo = gp1.right_stick_y;
-        forceTouchServo = Range.clip(forceTouchServo, 0f, 1f);
-
-        //TODO: adjust sign
-
+        forceClipServo = Range.clip(clamp(-gp1.right_trigger, -1.0f, 0.0f, 0.7f, 1.0f), 0.7f, 1.0f);
     }
     public double getForceFrontLeftMotor() {
         return forceFrontLeftMotor;
@@ -179,5 +148,11 @@ public class GamepadManager implements Serializable, Cloneable {
             e.printStackTrace();
         }
         return null;
+    }
+
+    public float clamp(float value, float originalFrom, float originalTo, float from, float to) {
+        float newRange = Math.abs(from - to);
+        float originalRange = Math.abs(originalFrom - originalTo);
+        return (value - originalFrom) / originalRange * newRange + from;
     }
 }

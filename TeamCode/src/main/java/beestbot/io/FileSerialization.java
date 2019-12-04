@@ -5,6 +5,7 @@ import android.os.Environment;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 
+import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
@@ -15,6 +16,8 @@ import java.io.OptionalDataException;
 import java.io.PrintWriter;
 import java.io.StreamCorruptedException;
 import java.io.StringWriter;
+
+import beestbot.util.Configuration;
 
 public class FileSerialization {
     public static boolean saveInternal(Context context, String filename, Object obj, Telemetry telemetry){
@@ -77,6 +80,29 @@ public class FileSerialization {
     }
 
     public static Object loadInternal(Context context, String fileName, Telemetry telemetry) {
+        try {
+            FileInputStream fis = context.openFileInput(fileName);
+            ObjectInputStream is = new ObjectInputStream(fis);
+            Object obj = is.readObject();
+            is.close();
+            fis.close();
+            return obj;
+        } catch (IOException e) {
+            // should only accur in Inverse.NO_INVERSE
+            telemetry.addData("Error-IOException", "Now try inverse actions");
+            return loadInternalInverse(context, Configuration.getInverseFileName(), telemetry);
+        } catch (ClassNotFoundException e) {
+            StringWriter sw = new StringWriter();
+            e.printStackTrace(new PrintWriter(sw));
+            String exceptionAsString = sw.toString();
+            telemetry.addData("Error-ClassNotFoundException", exceptionAsString);
+            return null;
+        }
+    }
+
+    private static Object loadInternalInverse(Context context, String fileName, Telemetry telemetry) {
+        // this one is just exactly the same except this one does not have recursion.
+        // and this one has Configuration.inverseActivated = true;
         try {
             FileInputStream fis = context.openFileInput(fileName);
             ObjectInputStream is = new ObjectInputStream(fis);
@@ -159,5 +185,31 @@ public class FileSerialization {
             assert clipboard != null;
             clipboard.setPrimaryClip(clip);
 //        }
+    }
+
+    public static String getInternalStorageList(Context context) {
+        File dir = context.getFilesDir();
+        StringBuilder s = new StringBuilder();
+        for (String file : dir.list()) {
+            s.append("; ").append(file);
+        }
+        return s.toString();
+    }
+
+    public static boolean removeInternal(Context context, String fileName, Telemetry telemetry) {
+        File dir = context.getFilesDir();
+        File file = new File(dir, fileName);
+        return file.delete();
+    }
+
+    public static boolean removeAllInternalRecordFiles(Context context, Telemetry telemetry) {
+        int unsuccessful = 0;
+        File[] dir = context.getFilesDir().listFiles();
+        for (File f: dir) {
+            if (f.getName().contains("_LOG.txt")) {
+                unsuccessful = unsuccessful + (f.delete() ? 0 : 1);
+            }
+        }
+        return unsuccessful == 0;
     }
 }

@@ -5,13 +5,14 @@ import java.util.LinkedList;
 import java.util.Queue;
 
 import beestbot.io.GamepadManager;
-import beestbot.state.Side;
+import beestbot.state.Inverse;
 import beestbot.state.SensorSignals;
+import beestbot.state.Side;
 import beestbot.state.State;
 import beestbot.state.Task;
 import beestbot.state.Team;
 import beestbot.vision.MineralMasterVision;
-import beestbot.vision.SkyStoneVsionManager;
+import beestbot.vision.VisionManager;
 
 public class Configuration {
     /*
@@ -19,16 +20,15 @@ public class Configuration {
      */
     public static final String FRONT_LEFT_MOTOR = "dm1";
     public static final String FRONT_RIGHT_MOTOR = "dm0";
-    public static final String BACK_LEFT_MOTOR = "um3";
+    public static final String BACK_LEFT_MOTOR = "dm2";
     public static final String BACK_RIGHT_MOTOR = "dm3";
-
     public static final String ARM_LEFT_MOTOR = "";
     public static final String ARM_RIGHT_MOTOR = "";
     public static final String LIFT_MOTOR = "um1";
 
-    public static final String FRONT_LEFT_SERVO = "us0";
-    public static final String FRONT_RIGHT_SERVO = "us1";
-    public static final String CLIP_SERVO = "us2";
+    public static final String FRONT_LEFT_SERVO = "ds0";
+    public static final String FRONT_RIGHT_SERVO = "ds1";
+    public static final String CLIP_SERVO = "ds2"; //0.7 -> 1
     public static final String TOUCH_SERVO = "";
 
     public static final String LEFT_DISTANCE_SENSOR = "";
@@ -40,6 +40,7 @@ public class Configuration {
         STATE MACHINE
      */
     private static Team team;
+    public static Inverse inverse = Inverse.X_AXIS;
     private static State state;
     private static Side side;
     private static SensorSignals sensorSignal = SensorSignals.UNKNOWN;
@@ -65,7 +66,8 @@ public class Configuration {
         Variables
      */
     public static ArrayList<GamepadManager> gamepadsTimeStream = new ArrayList<>();
-    public static SkyStoneVsionManager visionManager;
+    public static ArrayList<GamepadManager> inversedGamepadsTimeStream = new ArrayList<>();
+    public static VisionManager visionManager;
     public static GamepadManager gamepadManager;
     public static String debugMessage = "";
 
@@ -73,7 +75,20 @@ public class Configuration {
         assert team != null;
         assert side != null;
         assert sensorSignal != null;
-        return team.toString() + "-" + side.toString() + "-" + sensorSignal + "_LOG.txt";
+        return team.toString() + "-" + side.toString() + "-" + sensorSignal.toString() + "_LOG.txt";
+    }
+
+    public static String getInverseFileName() {
+        assert team != null;
+        assert side != null;
+        assert sensorSignal != null;
+        if (side == Side.FOUNDATION) {
+            return team.toString() + "-" + Side.QUARRY + "-" + sensorSignal.toString() + "_LOG.txt";
+        } else if (side == Side.QUARRY) {
+            return team.toString() + "-" + Side.FOUNDATION + "-" + sensorSignal.toString() + "_LOG.txt";
+        } else {
+            throw new UnsupportedOperationException("getInverseFileName() method has not implemented Side!");
+        }
     }
 
     public static State getState() {

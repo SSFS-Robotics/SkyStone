@@ -37,6 +37,7 @@ import java.util.ArrayList;
 import beestbot.io.FileSerialization;
 import beestbot.io.GamepadManager;
 import beestbot.motion.MotionManager;
+import beestbot.state.Inverse;
 import beestbot.state.SensorSignals;
 import beestbot.state.State;
 import beestbot.util.Configuration;
@@ -73,13 +74,13 @@ public class HankesAbsurdIntelligence extends BeestAbsurdMode {
         setTeam();
         setSide();
         setState();
+        setVisionManager();
 
-//        mineralVisionManager = new MineralVisionManager(hardwareMap, Configuration.INFER, Configuration.flashLight);
-        Configuration.visionManager = new SkyStoneVsionManager(hardwareMap, Configuration.INFER, Configuration.flashLight);
         motionManager = new MotionManager(telemetry, hardwareMap);
         Configuration.gamepadManager = new GamepadManager();
         Configuration.visionManager.enable();
         telemetry.addData("DEBUG", Configuration.debugMessage);
+        telemetry.addData("Recorded Files:", FileSerialization.getInternalStorageList(hardwareMap.appContext));
         telemetry.update();
     }
 
@@ -101,6 +102,7 @@ public class HankesAbsurdIntelligence extends BeestAbsurdMode {
         long timeElapsed = System.currentTimeMillis() - lStartTime;
         telemetry.addData("Record", "timeElapsed = %d", timeElapsed);
         telemetry.addData("DEBUG", Configuration.debugMessage);
+        telemetry.addData("Recorded Files:", FileSerialization.getInternalStorageList(hardwareMap.appContext));
         telemetry.update();
     }
 
@@ -126,19 +128,28 @@ public class HankesAbsurdIntelligence extends BeestAbsurdMode {
 
     @Override
     public void loop() {
+        // this line must be in front since Configuration.gamepadManager will later be altered if inverse mode is activated
+        motionManager.updateWithException(Configuration.gamepadManager);
+//        motionManager.update(gamepadManager);
+
         telemetry.addData("Record", "timeElapsed = %f", time);
         if (Configuration.getState() == State.CONTROL) {
             Configuration.gamepadManager.update(gamepad1, gamepad2);
         } else if (Configuration.getState() == State.RECORDING) {
+            telemetry.addData("Reverse Mode Running:", String.valueOf(Configuration.inverse));
             Configuration.gamepadManager.update(gamepad1, gamepad2);
             Configuration.gamepadsTimeStream.add(Configuration.gamepadManager.clone());
+
+            if (Configuration.inverse != Inverse.NO_INVERSE) {
+                Configuration.gamepadManager.inverselyUpdate(gamepad1, gamepad2);
+                Configuration.inversedGamepadsTimeStream.add(Configuration.gamepadManager.clone());
+            }
+
         } else if (Configuration.getState() == State.AUTONOMOUS && Configuration.gamepadsTimeStream.size() >0) {
             telemetry.addData("Running Record:", Configuration.getFileName());
             Configuration.gamepadManager = Configuration.gamepadsTimeStream.get(0);
             Configuration.gamepadsTimeStream.remove(0);
         }
-        motionManager.updateWithException(Configuration.gamepadManager);
-//        motionManager.update(gamepadManager);
         telemetry.addData("DEBUG", Configuration.debugMessage);
         telemetry.update();
     }

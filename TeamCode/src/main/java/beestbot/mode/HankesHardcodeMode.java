@@ -56,7 +56,7 @@ import beestbot.vision.SkyStoneVsionManager;
  * IMPORTANT: In order to use this OpMode, you need to obtain your own Vuforia license key as
  * is explained below.
  */
-@TeleOp(name = "HankesHardcodeMode", group = "OpMode")
+@TeleOp(name = "HankesHardcodeMode", group = "Autonomous")
 // TODO: WARNING - When there is an issue updating the opMode, try: Build->Clean Project
 public class HankesHardcodeMode extends BeestAbsurdMode {
 

@@ -22,8 +22,10 @@ public class GamepadManager implements Serializable, Cloneable {
     private double forceFrontRightMotor;
     private double forceBackLeftMotor;
     private double forceBackRightMotor;
+
     private double forceArmLeftMotor;
     private double forceArmRightMotor;
+
     private double forceLiftMotor;
 //    private int positionArmMotor;
 //    private boolean ifArmEncoder = false;
@@ -34,7 +36,7 @@ public class GamepadManager implements Serializable, Cloneable {
      */
     private float forceFrontLeftServo;
     private float forceFrontRightServo;
-    private float forceClipServo = -1.0f;
+    private float forceClipServo = 1.0f;
     private float forceTouchServo = 0.5f;
 
     private transient Telemetry telemetry;
@@ -70,9 +72,9 @@ public class GamepadManager implements Serializable, Cloneable {
         /*
             For lifting
          */
-//        float lift = gp2.a?1.0f:0.0f;
-//        float drop = gp2.b?1.0f:0.0f;
-//        forceLiftMotor = Range.clip(-lift + drop, -0.4, 0.4);
+        float lift = gp2.a?1.0f:0.0f;
+        float drop = gp2.b?1.0f:0.0f;
+        forceLiftMotor = Range.clip((-lift + drop) *0.6f, -1f, 1f);
 //        //TODO: adjust sign
 
         /*
@@ -83,9 +85,9 @@ public class GamepadManager implements Serializable, Cloneable {
 //        forceArmLeftMotor = Range.clip(-down + up, -0.1, 0.1);
 //        forceArmRightMotor = -Range.clip(-down + up, -0.1, 0.1);
 //        if (!ifArmEncoder) {
-            float arm = gp1.left_stick_y;
-            forceArmLeftMotor = Range.clip(arm, -0.3, 0.3);
-            forceArmRightMotor = Range.clip(arm, -0.3, 0.3);
+//            float arm = gp1.left_stick_y;
+//            forceArmLeftMotor = Range.clip(arm, -0.3, 0.3);
+//            forceArmRightMotor = Range.clip(arm, -0.3, 0.3);
 //        } else {
 //            // TODO
 //        }
@@ -107,7 +109,7 @@ public class GamepadManager implements Serializable, Cloneable {
 //        float rollOut = Range.clip(gp1.left_trigger + gp1.right_trigger, -1, 1);
 //        forceFrontLeftServo = Range.clip(-rollOut + rollIn, -1, 1);
 //        forceFrontRightServo = Range.clip(-rollOut + rollIn, -1, 1);
-
+//
 //        float rollInLeft = (gp1.left_bumper)?1.0f:0.0f;
 //        float rollInRight = (gp1.right_bumper)?1.0f:0.0f;
 //        float rollOutLeft = Range.clip(gp1.left_trigger, -1, 1);
@@ -115,22 +117,29 @@ public class GamepadManager implements Serializable, Cloneable {
 //        forceFrontLeftServo = Range.clip(-rollOutLeft + rollInLeft, -1, 1)/2.0f+0.5f; // (0, 0.5)
 //        forceFrontRightServo = -Range.clip(-rollOutRight + rollInRight, -1, 1)/2.0f+0.5f; // (0, 0.5)
 
+        if (gp1.left_bumper) {
+            forceFrontLeftServo = gp1.left_stick_y;
+        }
+        if (gp1.right_bumper) {
+            forceFrontRightServo = gp1.right_stick_y;
+        }
+
         if (gp1.x && !gp1.y) {
             forceClipServo = -1.0f;
         } else if (!gp1.x && gp1.y) {
             forceClipServo = 0.7f;
         }
-        forceClipServo = Range.clip(forceClipServo, -1.0f, 1.0f);
-
-        if (gp1.dpad_down && !gp1.dpad_up) {
-            forceTouchServo = 0f;
-        } else if (!gp1.dpad_down && gp1.dpad_up) {
-            forceTouchServo = 1f;
-        } else if ((gp1.dpad_left || gp1.dpad_right)&&(forceTouchServo != 0.5f)) {
-            forceTouchServo = 0.5f;
-        }
+        forceClipServo = Range.clip(gp1.left_trigger, 0f, 1.0f);
+//
+//        if (gp1.dpad_down && !gp1.dpad_up) {
+//            forceTouchServo = 0f;
+//        } else if (!gp1.dpad_down && gp1.dpad_up) {
+//            forceTouchServo = 1f;
+//        } else if ((gp1.dpad_left || gp1.dpad_right)&&(forceTouchServo != 0.5f)) {
+//            forceTouchServo = 0.5f;
+//        }
 //        forceTouchServo = gp1.right_stick_y;
-        forceTouchServo = Range.clip(forceTouchServo, 0f, 1f);
+//        forceTouchServo = Range.clip(forceTouchServo, 0f, 1f);
 
         //TODO: adjust sign
 

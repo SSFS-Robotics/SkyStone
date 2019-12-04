@@ -16,16 +16,16 @@ public class Configuration {
      */
     public static final String FRONT_LEFT_MOTOR = "dm1";
     public static final String FRONT_RIGHT_MOTOR = "dm0";
-    public static final String BACK_LEFT_MOTOR = "dm2";// used to be um3, now dm2
+    public static final String BACK_LEFT_MOTOR = "dm2";
     public static final String BACK_RIGHT_MOTOR = "dm3";
-    public static final String ARM_LEFT_MOTOR = "um1";
-    public static final String ARM_RIGHT_MOTOR = "um2";
-    public static final String LIFT_MOTOR = "";
+    public static final String ARM_LEFT_MOTOR = "";
+    public static final String ARM_RIGHT_MOTOR = "";
+    public static final String LIFT_MOTOR = "um1";
 
-    public static final String FRONT_LEFT_SERVO = "";
-    public static final String FRONT_RIGHT_SERVO = "";
-    public static final String CLIP_SERVO = "us0";
-    public static final String TOUCH_SERVO = "us1";
+    public static final String FRONT_LEFT_SERVO = "ds0";
+    public static final String FRONT_RIGHT_SERVO = "ds1";
+    public static final String CLIP_SERVO = "ds2";
+    public static final String TOUCH_SERVO = "";
 
     public static final String LEFT_DISTANCE_SENSOR = "";
     public static final String RIGHT_DISTANCE_SENSOR = "";

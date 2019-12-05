@@ -82,12 +82,12 @@ public class Configuration {
         assert team != null;
         assert side != null;
         assert sensorSignal != null;
-        if (side == Side.FOUNDATION) {
-            return team.toString() + "-" + Side.QUARRY + "-" + sensorSignal.toString() + "_LOG.txt";
-        } else if (side == Side.QUARRY) {
-            return team.toString() + "-" + Side.FOUNDATION + "-" + sensorSignal.toString() + "_LOG.txt";
+        if (team == Team.BLUE) {
+            return Team.RED + "-" + side + "-" + sensorSignal.toString() + "_LOG.txt";
+        } else if (team == Team.RED) {
+            return Team.BLUE + "-" + side + "-" + sensorSignal.toString() + "_LOG.txt";
         } else {
-            throw new UnsupportedOperationException("getInverseFileName() method has not implemented Side!");
+            throw new UnsupportedOperationException("getInverseFileName() method has not implemented Team!");
         }
     }
 

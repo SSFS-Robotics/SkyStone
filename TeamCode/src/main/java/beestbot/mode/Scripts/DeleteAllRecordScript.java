@@ -16,7 +16,6 @@ public class DeleteAllRecordScript extends ScriptAbsurdMode {
 
     @Override
     public void start() {
-        Configuration.visionManager.disable();
         resetStartTime();
 
         // remove all records

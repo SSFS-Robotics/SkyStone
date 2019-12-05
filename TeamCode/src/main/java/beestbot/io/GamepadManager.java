@@ -45,17 +45,48 @@ public class GamepadManager implements Serializable, Cloneable {
     }
 
     public void inverselyUpdate(Gamepad gp1, Gamepad gp2) {
-        // do some operation
         if (Configuration.inverse == Inverse.X_AXIS) {
-            gp1.left_stick_x = -gp1.left_stick_x;
-            gp1.right_stick_x = -gp1.right_stick_x;
-            gp2.left_stick_x = -gp2.left_stick_x;
-            gp2.right_stick_x = -gp2.right_stick_x;
+        /*
+            For wheels
+         */
+
+            // when first gamepad is not controlling movement, second gamepad will take over
+            float LF_1 = (gp2.left_stick_y - -gp2.left_stick_x - -gp2.right_stick_x)*1.0f + (gp1.left_stick_y - -gp1.left_stick_x - 0)*0.2f;
+            float RF_1 = (gp2.left_stick_y + -gp2.left_stick_x + -gp2.right_stick_x)*1.0f + (gp1.left_stick_y + -gp1.left_stick_x + 0)*0.2f;
+            float LB_1 = (gp2.left_stick_y + -gp2.left_stick_x - -gp2.right_stick_x)*1.0f + (gp1.left_stick_y + -gp1.left_stick_x - 0)*0.2f;
+            float RB_1 = (gp2.left_stick_y - -gp2.left_stick_x + -gp2.right_stick_x)*1.0f + (gp1.left_stick_y - -gp1.left_stick_x + 0)*0.2f;
+            Float[] decMax_1 = new Float[]{Math.abs(LF_1), Math.abs(RF_1), Math.abs(LB_1), Math.abs(RB_1)};
+            List<Float> a_1 = new ArrayList<>(Arrays.asList(decMax_1));
+            float max_1 = Range.clip(Collections.max(a_1), 1f, Float.MAX_VALUE);
+            LF_1 = (LF_1 / max_1) * Configuration.ABSOLUTE_SPEED *0.6f;
+            RF_1 = (RF_1 / max_1) * Configuration.ABSOLUTE_SPEED *0.6f;
+            LB_1 = (LB_1 / max_1) * Configuration.ABSOLUTE_SPEED *0.6f;
+            RB_1 = (RB_1 / max_1) * Configuration.ABSOLUTE_SPEED *0.6f;
+
+            forceFrontLeftMotor = Range.clip(LF_1 , -1f, 1f);
+            forceFrontRightMotor = -Range.clip(RF_1, -1f, 1f);
+            forceBackLeftMotor = Range.clip(LB_1, -1f, 1f);
+            forceBackRightMotor = -Range.clip(RB_1, -1f, 1f);
+
+
+        /*
+            For lifting
+         */
+            forceLiftMotor = Range.clip(gp1.right_stick_y * 0.2f, -1f, 1f);
+
+        /*
+            For Two Side servos
+         */
+            forceFrontRightServo = clamp(gp1.left_trigger, 0f, 1f, 0.2f, 1.0f); // 1~0.2
+            forceFrontLeftServo = clamp(-gp1.left_trigger, -1f, 0f, 0.2f, 1.0f); // 0.2-1
+
+        /*
+            For clips
+         */
+            forceClipServo = Range.clip(clamp(-gp1.right_trigger, -1.0f, 0.0f, 0.7f, 1.0f), 0.7f, 1.0f);
         } else {
             throw new UnsupportedOperationException("inverselyUpdate() method not implemented for additional Inverse!");
         }
-
-        update(gp1, gp2);
     }
 
     public void update(Gamepad gp1, Gamepad gp2) {

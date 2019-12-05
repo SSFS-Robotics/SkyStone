@@ -41,7 +41,6 @@ public class ScriptAbsurdMode extends OpMode {
 
     @Override
     public void start() {
-        Configuration.visionManager.disable();
         resetStartTime();
 
         // ...

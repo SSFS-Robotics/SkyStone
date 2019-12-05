@@ -128,28 +128,28 @@ public class HankesAbsurdIntelligence extends BeestAbsurdMode {
 
     @Override
     public void loop() {
-        // this line must be in front since Configuration.gamepadManager will later be altered if inverse mode is activated
-        motionManager.updateWithException(Configuration.gamepadManager);
-//        motionManager.update(gamepadManager);
 
         telemetry.addData("Record", "timeElapsed = %f", time);
         if (Configuration.getState() == State.CONTROL) {
             Configuration.gamepadManager.update(gamepad1, gamepad2);
         } else if (Configuration.getState() == State.RECORDING) {
-            telemetry.addData("Reverse Mode Running:", String.valueOf(Configuration.inverse));
-            Configuration.gamepadManager.update(gamepad1, gamepad2);
-            Configuration.gamepadsTimeStream.add(Configuration.gamepadManager.clone());
 
+            telemetry.addData("Reverse Mode Running:", String.valueOf(Configuration.inverse));
+            // this line must be in front since Configuration.gamepadManager will later be altered if inverse mode is activated
             if (Configuration.inverse != Inverse.NO_INVERSE) {
                 Configuration.gamepadManager.inverselyUpdate(gamepad1, gamepad2);
                 Configuration.inversedGamepadsTimeStream.add(Configuration.gamepadManager.clone());
             }
+
+            Configuration.gamepadManager.update(gamepad1, gamepad2);
+            Configuration.gamepadsTimeStream.add(Configuration.gamepadManager.clone());
 
         } else if (Configuration.getState() == State.AUTONOMOUS && Configuration.gamepadsTimeStream.size() >0) {
             telemetry.addData("Running Record:", Configuration.getFileName());
             Configuration.gamepadManager = Configuration.gamepadsTimeStream.get(0);
             Configuration.gamepadsTimeStream.remove(0);
         }
+        motionManager.updateWithException(Configuration.gamepadManager);
         telemetry.addData("DEBUG", Configuration.debugMessage);
         telemetry.update();
     }
@@ -161,6 +161,11 @@ public class HankesAbsurdIntelligence extends BeestAbsurdMode {
             Configuration.debugMessage = Configuration.debugMessage + "Configuration saved in " + Configuration.getFileName() + "; Successful = " + Boolean.toString(successful) + "; ";
 //            String s = FileSerialization.readInternal(hardwareMap.appContext, Configuration.getFileName(), telemetry);
 //            FileSerialization.setClipboard(hardwareMap.appContext, s);
+
+            if (Configuration.inverse != Inverse.NO_INVERSE) {
+                successful = FileSerialization.saveInternal(hardwareMap.appContext, Configuration.getInverseFileName(), Configuration.inversedGamepadsTimeStream, telemetry);
+                Configuration.debugMessage = Configuration.debugMessage + "Inversed Configuration saved in " + Configuration.getFileName() + "; Successful = " + Boolean.toString(successful) + "; ";
+            }
         }
         telemetry.addData("Time", "time = %f", time);
         telemetry.addData("DEBUG", Configuration.debugMessage);

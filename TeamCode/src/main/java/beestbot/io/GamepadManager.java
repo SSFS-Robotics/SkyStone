@@ -42,6 +42,39 @@ public class GamepadManager implements Serializable, Cloneable {
     public float forceTouchServo; // deprecated
 
     public GamepadManager() {
+        init();
+    }
+
+    private void init() {
+        if (Configuration.inverse == Inverse.X_AXIS) {
+            forceFrontLeftMotor = Range.clip(0 , -1f, 1f);
+            forceFrontRightMotor = -Range.clip(0, -1f, 1f);
+            forceBackLeftMotor = Range.clip(0, -1f, 1f);
+            forceBackRightMotor = -Range.clip(0, -1f, 1f);
+
+
+        /*
+            For lifting
+         */
+            forceLiftMotor = Range.clip(0 * 0.2f, -1f, 1f);
+
+        /*
+            For Two Side servos
+         */
+            forceFrontRightServo = clamp(0, 0f, 1f, 0.2f, 1.0f); // 1~0.2
+            forceFrontLeftServo = clamp(0, -1f, 0f, 0.2f, 1.0f); // 0.2-1
+
+        /*
+            For clips
+         */
+            forceClipServo = Range.clip(clamp(0, -1.0f, 0.0f, 0.7f, 1.0f), 0.7f, 1.0f);
+        } else {
+            throw new UnsupportedOperationException("inverselyUpdate() method not implemented for additional Inverse!");
+        }
+    }
+
+    public void updateInitial() {
+        init();
     }
 
     public void inverselyUpdate(Gamepad gp1, Gamepad gp2) {
@@ -51,10 +84,10 @@ public class GamepadManager implements Serializable, Cloneable {
          */
 
             // when first gamepad is not controlling movement, second gamepad will take over
-            float LF_1 = (gp2.left_stick_y - -gp2.left_stick_x - -gp2.right_stick_x)*1.0f + (gp1.left_stick_y - -gp1.left_stick_x - 0)*0.2f;
-            float RF_1 = (gp2.left_stick_y + -gp2.left_stick_x + -gp2.right_stick_x)*1.0f + (gp1.left_stick_y + -gp1.left_stick_x + 0)*0.2f;
-            float LB_1 = (gp2.left_stick_y + -gp2.left_stick_x - -gp2.right_stick_x)*1.0f + (gp1.left_stick_y + -gp1.left_stick_x - 0)*0.2f;
-            float RB_1 = (gp2.left_stick_y - -gp2.left_stick_x + -gp2.right_stick_x)*1.0f + (gp1.left_stick_y - -gp1.left_stick_x + 0)*0.2f;
+            float LF_1 = (gp2.left_stick_y - -gp2.left_stick_x - -gp2.right_stick_x)*1.0f + (gp1.left_stick_y - -gp1.left_stick_x - 0)*0.4f;
+            float RF_1 = (gp2.left_stick_y + -gp2.left_stick_x + -gp2.right_stick_x)*1.0f + (gp1.left_stick_y + -gp1.left_stick_x + 0)*0.4f;
+            float LB_1 = (gp2.left_stick_y + -gp2.left_stick_x - -gp2.right_stick_x)*1.0f + (gp1.left_stick_y + -gp1.left_stick_x - 0)*0.4f;
+            float RB_1 = (gp2.left_stick_y - -gp2.left_stick_x + -gp2.right_stick_x)*1.0f + (gp1.left_stick_y - -gp1.left_stick_x + 0)*0.4f;
             Float[] decMax_1 = new Float[]{Math.abs(LF_1), Math.abs(RF_1), Math.abs(LB_1), Math.abs(RB_1)};
             List<Float> a_1 = new ArrayList<>(Arrays.asList(decMax_1));
             float max_1 = Range.clip(Collections.max(a_1), 1f, Float.MAX_VALUE);
@@ -95,10 +128,10 @@ public class GamepadManager implements Serializable, Cloneable {
          */
 
         // when first gamepad is not controlling movement, second gamepad will take over
-        float LF_1 = (gp2.left_stick_y - gp2.left_stick_x - gp2.right_stick_x)*1.0f + (gp1.left_stick_y - gp1.left_stick_x - 0)*0.2f;
-        float RF_1 = (gp2.left_stick_y + gp2.left_stick_x + gp2.right_stick_x)*1.0f + (gp1.left_stick_y + gp1.left_stick_x + 0)*0.2f;
-        float LB_1 = (gp2.left_stick_y + gp2.left_stick_x - gp2.right_stick_x)*1.0f + (gp1.left_stick_y + gp1.left_stick_x - 0)*0.2f;
-        float RB_1 = (gp2.left_stick_y - gp2.left_stick_x + gp2.right_stick_x)*1.0f + (gp1.left_stick_y - gp1.left_stick_x + 0)*0.2f;
+        float LF_1 = (gp2.left_stick_y - gp2.left_stick_x - gp2.right_stick_x)*1.0f + (gp1.left_stick_y - gp1.left_stick_x - 0)*0.4f;
+        float RF_1 = (gp2.left_stick_y + gp2.left_stick_x + gp2.right_stick_x)*1.0f + (gp1.left_stick_y + gp1.left_stick_x + 0)*0.4f;
+        float LB_1 = (gp2.left_stick_y + gp2.left_stick_x - gp2.right_stick_x)*1.0f + (gp1.left_stick_y + gp1.left_stick_x - 0)*0.4f;
+        float RB_1 = (gp2.left_stick_y - gp2.left_stick_x + gp2.right_stick_x)*1.0f + (gp1.left_stick_y - gp1.left_stick_x + 0)*0.4f;
         Float[] decMax_1 = new Float[]{Math.abs(LF_1), Math.abs(RF_1), Math.abs(LB_1), Math.abs(RB_1)};
         List<Float> a_1 = new ArrayList<>(Arrays.asList(decMax_1));
         float max_1 = Range.clip(Collections.max(a_1), 1f, Float.MAX_VALUE);

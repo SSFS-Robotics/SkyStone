@@ -71,6 +71,21 @@ public class Configuration {
     public static GamepadManager gamepadManager;
     public static String debugMessage = "";
 
+    public static void init() {
+        team = null;
+        state = null;
+        side = null;
+        tasks = new LinkedList<>();
+        signals = new LinkedList<>();
+        signal = null;
+        currentTask = null;
+        gamepadsTimeStream = new ArrayList<>();
+        inversedGamepadsTimeStream = new ArrayList<>();
+        visionManager = null;
+        gamepadManager = null;
+        debugMessage = null;
+    }
+
     public static String getFileName() {
         assert team != null;
         assert side != null;

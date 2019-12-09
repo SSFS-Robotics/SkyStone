@@ -64,6 +64,8 @@ public class HankesAbsurdIntelligence extends BeestAbsurdMode {
 
     @Override
     public void init() {
+        Configuration.init();
+
         super.msStuckDetectInit     = 5000;
         super.msStuckDetectInitLoop = 5000;
         super.msStuckDetectStart    = 5000;
@@ -115,12 +117,8 @@ public class HankesAbsurdIntelligence extends BeestAbsurdMode {
             Configuration.debugMessage = Configuration.debugMessage + "Getting file in " + Configuration.getFileName() + "; ";
 
             Object _ = FileSerialization.loadInternal(hardwareMap.appContext, Configuration.getFileName(), telemetry);
-            if (_ != null) {
-                Configuration.gamepadsTimeStream = (ArrayList<GamepadManager>) _;
-                Configuration.debugMessage = Configuration.debugMessage + "File != null; ";
-            } else {
-                Configuration.debugMessage = Configuration.debugMessage + "File == null; Object is null; ";
-            }
+            assert _ != null;
+            Configuration.gamepadsTimeStream = (ArrayList<GamepadManager>) _;
         }
         telemetry.addData("DEBUG", Configuration.debugMessage);
         telemetry.update();
@@ -156,13 +154,18 @@ public class HankesAbsurdIntelligence extends BeestAbsurdMode {
 
     @Override
     public void stop() {
+        Configuration.visionManager.disable();
         if (Configuration.getState() == State.RECORDING) {
+            Configuration.gamepadManager.updateInitial();
+
+            Configuration.gamepadsTimeStream.add(Configuration.gamepadManager.clone());
             boolean successful = FileSerialization.saveInternal(hardwareMap.appContext, Configuration.getFileName(), Configuration.gamepadsTimeStream, telemetry);
             Configuration.debugMessage = Configuration.debugMessage + "Configuration saved in " + Configuration.getFileName() + "; Successful = " + Boolean.toString(successful) + "; ";
 //            String s = FileSerialization.readInternal(hardwareMap.appContext, Configuration.getFileName(), telemetry);
 //            FileSerialization.setClipboard(hardwareMap.appContext, s);
 
             if (Configuration.inverse != Inverse.NO_INVERSE) {
+                Configuration.inversedGamepadsTimeStream.add(Configuration.gamepadManager.clone());
                 successful = FileSerialization.saveInternal(hardwareMap.appContext, Configuration.getInverseFileName(), Configuration.inversedGamepadsTimeStream, telemetry);
                 Configuration.debugMessage = Configuration.debugMessage + "Inversed Configuration saved in " + Configuration.getFileName() + "; Successful = " + Boolean.toString(successful) + "; ";
             }

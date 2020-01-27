@@ -89,7 +89,7 @@ public class HankesHardcodeMode extends BeestAbsurdMode {
         setSide();
         setState();
 
-        Configuration.visionManager = new SkyStoneVsionManager(hardwareMap, Configuration.INFER, Configuration.flashLight);
+        Configuration.visionManager = new SkyStoneVsionManager(hardwareMap);
         motionManager = new MotionManager(telemetry, hardwareMap);
         Configuration.gamepadManager = new GamepadManager();
         Configuration.visionManager.enable();

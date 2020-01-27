@@ -50,7 +50,6 @@ import org.firstinspires.ftc.robotcore.external.tfod.Recognition;
  * is explained below.
  */
 @TeleOp(name = "Concept: TensorFlow Object Detection Webcam", group = "Concept")
-@Disabled
 public class ConceptTensorFlowObjectDetectionWebcam extends LinearOpMode {
     private static final String TFOD_MODEL_ASSET = "Skystone.tflite";
     private static final String LABEL_FIRST_ELEMENT = "Stone";
@@ -68,9 +67,8 @@ public class ConceptTensorFlowObjectDetectionWebcam extends LinearOpMode {
      * Once you've obtained a license key, copy the string from the Vuforia web site
      * and paste it in to your code on the next line, between the double quotes.
      */
-    private static final String VUFORIA_KEY =
-            " -- YOUR NEW VUFORIA KEY GOES HERE  --- ";
-
+    private static final String VUFORIA_KEY = "AfdTR9D/////AAABmTD0Gry/NUengHVpoCy0wm4Eqk0VfLshQ6EDUICCgGa8JSEvUtzK5zfxO8yOev9NDT4epFyH22QcPD/fJPcEhs9eRFp0DCU6R9RCgrjYNwqbjKnwyj77nWs8lIBM3W3UZE1accXjDeEUcPBKIlV0+0ALLJwJPPmOsTidwnX1UWLUQgl4wq1wMjSRryKg6z7gJtfv7QPRzg2g9V3/oDfirNzso2jB9APcr86oCXCjNcCcWE+i/jNUhG9XgnMKpUARuSaS3aDXo/3vhm5SkAuDSxgqa/rjT8HGLPjDqFd8uySA3zNMgSzaK0161VqcC6DNA5Jbs9VmO8/G7ZHGItVp0xMcmyGZzw/IBeOhK/LySUd4";
+//    private static final String VUFORIA_KEY = "AYVp8HD/////AAAAmbWvbJCPAUEivTbJDYmkKlUhuPRlEN5MxRGtGpK68YAYgdTUSycNhLm/AQ2nxYbFwiX+eiXtdzMQg/h0/OO0uHdiq2AGB9qus774oqnqQ2DrzfdUARClxtcnFwJw3Ba/tyvP/gxWjMWetKcwfdDAjD+dilVMrqS7ePsZZPzjSaNB/kjaP3yQRTN1D/050KdnxwKicMkqhulqKv1miESfNBm7qQd3h9FZJoVZumqfytS7pMmqAjvSN7TGcQw7vxw7DJAECvRfoFhuszWNjwcF3rwRsQEXr1jynbJvhh8z4SJdJDqIK4EEroLLSpHVTYj9si4xULph02bAc2fUXDPMS/g7VfFZcgKuzFvZ/eR3ZHCm";
     /**
      * {@link #vuforia} is the variable we will use to store our instance of the Vuforia
      * localization engine.

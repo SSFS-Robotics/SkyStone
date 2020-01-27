@@ -6,6 +6,7 @@ import com.vuforia.PIXEL_FORMAT;
 import com.vuforia.Vuforia;
 
 import org.firstinspires.ftc.robotcore.external.ClassFactory;
+import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
 import org.firstinspires.ftc.robotcore.external.navigation.VuforiaLocalizer;
 import org.firstinspires.ftc.robotcore.external.tfod.Recognition;
 import org.firstinspires.ftc.robotcore.external.tfod.TFObjectDetector;
@@ -18,22 +19,23 @@ public class SkyStoneVsionManager extends NullVsionManager {
     private static final String TFOD_MODEL_ASSET = "Skystone.tflite";
     private static final String LABEL_FIRST_ELEMENT = "Stone";
     private static final String LABEL_SECOND_ELEMENT = "Skystone";
+    private static final String WEBCAME_NAME = "";
+    private static final boolean VUFORIA_SCREEN = false;
+    private static final boolean USE_FLASH = false;
 
     private VuforiaLocalizer vuforia;
     private TFObjectDetector tfod;
-    private boolean useFlash;
 
-    private boolean VUFORIA_SCREEN = false;
-
-    public SkyStoneVsionManager(HardwareMap hardwareMap, MineralMasterVision.TFLiteAlgorithm infer, boolean useFlash) {
+    public SkyStoneVsionManager(HardwareMap hardwareMap) {
         super(hardwareMap);
-        this.useFlash = useFlash;
 
         setupVuforia(hardwareMap);
         setupTensorflow(hardwareMap);
     }
 
     private void setupVuforia(HardwareMap hardwareMap) {
+
+
         // Initiate vuforia
         int cameraMonitorViewId = hardwareMap.appContext.getResources().getIdentifier("cameraMonitorViewId", "id", hardwareMap.appContext.getPackageName());
 
@@ -45,8 +47,9 @@ public class SkyStoneVsionManager extends NullVsionManager {
         else {
             parameters = new VuforiaLocalizer.Parameters();
         }
-        parameters.cameraDirection = VuforiaLocalizer.CameraDirection.BACK;
-        parameters.vuforiaLicenseKey = "AYVp8HD/////AAAAmbWvbJCPAUEivTbJDYmkKlUhuPRlEN5MxRGtGpK68YAYgdTUSycNhLm/AQ2nxYbFwiX+eiXtdzMQg/h0/OO0uHdiq2AGB9qus774oqnqQ2DrzfdUARClxtcnFwJw3Ba/tyvP/gxWjMWetKcwfdDAjD+dilVMrqS7ePsZZPzjSaNB/kjaP3yQRTN1D/050KdnxwKicMkqhulqKv1miESfNBm7qQd3h9FZJoVZumqfytS7pMmqAjvSN7TGcQw7vxw7DJAECvRfoFhuszWNjwcF3rwRsQEXr1jynbJvhh8z4SJdJDqIK4EEroLLSpHVTYj9si4xULph02bAc2fUXDPMS/g7VfFZcgKuzFvZ/eR3ZHCm";
+        if (WEBCAME_NAME != "") {parameters.cameraName = hardwareMap.get(WebcamName.class, WEBCAME_NAME);}
+        parameters.vuforiaLicenseKey = "AfdTR9D/////AAABmTD0Gry/NUengHVpoCy0wm4Eqk0VfLshQ6EDUICCgGa8JSEvUtzK5zfxO8yOev9NDT4epFyH22QcPD/fJPcEhs9eRFp0DCU6R9RCgrjYNwqbjKnwyj77nWs8lIBM3W3UZE1accXjDeEUcPBKIlV0+0ALLJwJPPmOsTidwnX1UWLUQgl4wq1wMjSRryKg6z7gJtfv7QPRzg2g9V3/oDfirNzso2jB9APcr86oCXCjNcCcWE+i/jNUhG9XgnMKpUARuSaS3aDXo/3vhm5SkAuDSxgqa/rjT8HGLPjDqFd8uySA3zNMgSzaK0161VqcC6DNA5Jbs9VmO8/G7ZHGItVp0xMcmyGZzw/IBeOhK/LySUd4";
+//        parameters.cameraDirection = VuforiaLocalizer.CameraDirection.BACK;
 
         // Instantiate the Vuforia engine
         vuforia = ClassFactory.getInstance().createVuforia(parameters);
@@ -68,7 +71,7 @@ public class SkyStoneVsionManager extends NullVsionManager {
 
     public void enable() {
         tfod.activate();
-        CameraDevice.getInstance().setFlashTorchMode(useFlash);
+        CameraDevice.getInstance().setFlashTorchMode(USE_FLASH);
     }
 
     public void end() {

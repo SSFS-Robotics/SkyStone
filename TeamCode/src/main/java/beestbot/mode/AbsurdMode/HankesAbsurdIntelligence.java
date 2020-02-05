@@ -41,7 +41,6 @@ import beestbot.state.Inverse;
 import beestbot.state.SensorSignals;
 import beestbot.state.State;
 import beestbot.util.Configuration;
-import beestbot.vision.SkyStoneVsionManager;
 
 /**
  * This 2018-2019 OpMode illustrates the basics of using the TensorFlow Object Detection API to
@@ -58,80 +57,55 @@ import beestbot.vision.SkyStoneVsionManager;
 // TODO: WARNING - When there is an issue updating the opMode, try: Build->Clean Project
 public class HankesAbsurdIntelligence extends BeestAbsurdMode {
 
-    private MotionManager motionManager;
     private ArrayList<SensorSignals> positionStream = new ArrayList<>();
 
-
     @Override
-    public void init() {
-        Configuration.init();
-
-        super.msStuckDetectInit     = 5000;
-        super.msStuckDetectInitLoop = 5000;
-        super.msStuckDetectStart    = 5000;
-        super.msStuckDetectLoop     = 5000;
-        super.msStuckDetectStop     = 10000;
-
-        // initiate modes based on specific settings
-        setTeam();
-        setSide();
-        setState();
-        setVisionManager();
-
-        motionManager = new MotionManager(telemetry, hardwareMap);
-        Configuration.gamepadManager = new GamepadManager();
-        Configuration.visionManager.enable();
-        telemetry.addData("DEBUG", Configuration.debugMessage);
+    public void sub_init() {
         telemetry.addData("Recorded Files:", FileSerialization.getInternalStorageList(hardwareMap.appContext));
-        telemetry.update();
     }
 
+    // TODO: FUCKING CLEAN UP THESE JUNK CODE
     @Override
-    public void init_loop() {
-        long lStartTime = System.currentTimeMillis();
-
-        // update [SensorSignals laskKnown]
+    public void sub_init_loop() {
+        // task: update [SensorSignals laskKnown]
         SensorSignals positions = Configuration.visionManager.fetch();
         if (positionStream.size() > Configuration.maximumStream)
             positionStream.remove(0);
         positionStream.add(positions);
+
+        // task: read sensor signal to get more stable result and store it
         SensorSignals _ = calculateLastKnown(positionStream);
-        if (_ != SensorSignals.UNKNOWN) {
+        if (positionStream.size() == Configuration.maximumStream && _ != SensorSignals.UNKNOWN) {
             Configuration.setSensorSignal(_);
             telemetry.addData("Sensor", "randomPosition = %s", Configuration.getSensorSignal());
+        } else {
+            telemetry.addData("Sensor", "tempRandomPosition = %s", _);
+            telemetry.addData("Sensor", "positionStream.size() = %s", positionStream.size());
         }
 
-        long timeElapsed = System.currentTimeMillis() - lStartTime;
-        telemetry.addData("Record", "timeElapsed = %d", timeElapsed);
-        telemetry.addData("DEBUG", Configuration.debugMessage);
         telemetry.addData("Recorded Files:", FileSerialization.getInternalStorageList(hardwareMap.appContext));
-        telemetry.update();
     }
 
     @Override
-    public void start() {
+    public void sub_start() {
 //        if (Configuration.getSensorSignal() == SensorSignals.UNKNOWN) throw new InvalidParameterException("SensorSignals cannot be 'UNKNOWN'");
         Configuration.visionManager.disable();
-        resetStartTime();
-        if (Configuration.getState() == State.AUTONOMOUS) {
+        if (Configuration.getState() == State.PLAYBACK) {
             Configuration.debugMessage = Configuration.debugMessage + "Getting file in " + Configuration.getFileName() + "; ";
 
             Object _ = FileSerialization.loadInternal(hardwareMap.appContext, Configuration.getFileName(), telemetry);
             assert _ != null;
             Configuration.gamepadsTimeStream = (ArrayList<GamepadManager>) _;
         }
-        telemetry.addData("DEBUG", Configuration.debugMessage);
-        telemetry.update();
     }
 
     @Override
-    public void loop() {
-
+    public void sub_loop() {
         telemetry.addData("Record", "timeElapsed = %f", time);
         if (Configuration.getState() == State.CONTROL) {
             Configuration.gamepadManager.update(gamepad1, gamepad2);
-        } else if (Configuration.getState() == State.RECORDING) {
 
+        } else if (Configuration.getState() == State.RECORDING) {
             telemetry.addData("Reverse Mode Running:", String.valueOf(Configuration.inverse));
             // this line must be in front since Configuration.gamepadManager will later be altered if inverse mode is activated
             if (Configuration.inverse != Inverse.NO_INVERSE) {
@@ -142,18 +116,16 @@ public class HankesAbsurdIntelligence extends BeestAbsurdMode {
             Configuration.gamepadManager.update(gamepad1, gamepad2);
             Configuration.gamepadsTimeStream.add(Configuration.gamepadManager.clone());
 
-        } else if (Configuration.getState() == State.AUTONOMOUS && Configuration.gamepadsTimeStream.size() >0) {
+        } else if (Configuration.getState() == State.PLAYBACK && Configuration.gamepadsTimeStream.size() >0) {
             telemetry.addData("Running Record:", Configuration.getFileName());
             Configuration.gamepadManager = Configuration.gamepadsTimeStream.get(0);
             Configuration.gamepadsTimeStream.remove(0);
         }
         motionManager.updateWithException(Configuration.gamepadManager);
-        telemetry.addData("DEBUG", Configuration.debugMessage);
-        telemetry.update();
     }
 
     @Override
-    public void stop() {
+    public void sub_stop() {
         Configuration.visionManager.disable();
         if (Configuration.getState() == State.RECORDING) {
             Configuration.gamepadManager.updateInitial();
@@ -170,14 +142,13 @@ public class HankesAbsurdIntelligence extends BeestAbsurdMode {
                 Configuration.debugMessage = Configuration.debugMessage + "Inversed Configuration saved in " + Configuration.getFileName() + "; Successful = " + Boolean.toString(successful) + "; ";
             }
         }
-        telemetry.addData("Time", "time = %f", time);
-        telemetry.addData("DEBUG", Configuration.debugMessage);
-        telemetry.update();
     }
 
     private static SensorSignals calculateLastKnown(ArrayList<SensorSignals> positionStream) {
         for (SensorSignals pos: positionStream) {
+            // all pos should have the same signal
             if (positionStream.get(0) != pos) {
+                // otherwise output unknown
                 return SensorSignals.UNKNOWN;
             }
         }

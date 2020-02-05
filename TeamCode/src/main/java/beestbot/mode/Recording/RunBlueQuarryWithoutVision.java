@@ -24,11 +24,11 @@ public class RunBlueQuarryWithoutVision extends HankesAbsurdIntelligence {
 
     @Override
     public void setState() {
-        Configuration.setState(State.AUTONOMOUS);
+        Configuration.setState(State.PLAYBACK);
     }
 
     @Override
     public void setVisionManager() {
-        Configuration.visionManager = new NullVsionManager(hardwareMap);
+        Configuration.visionManager = new NullVsionManager(hardwareMap, telemetry);
     }
 }

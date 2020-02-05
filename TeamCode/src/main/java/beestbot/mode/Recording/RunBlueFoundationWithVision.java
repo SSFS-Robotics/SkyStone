@@ -24,12 +24,12 @@ public class RunBlueFoundationWithVision extends HankesAbsurdIntelligence {
 
     @Override
     public void setState() {
-        Configuration.setState(State.AUTONOMOUS);
+        Configuration.setState(State.PLAYBACK);
     }
 
     @Override
     public void setVisionManager() {
 //        mineralVisionManager = new MineralVisionManager(hardwareMap, Configuration.INFER, Configuration.flashLight);
-        Configuration.visionManager = new SkyStoneVsionManager(hardwareMap);
+        Configuration.visionManager = new SkyStoneVsionManager(hardwareMap, telemetry);
     }
 }

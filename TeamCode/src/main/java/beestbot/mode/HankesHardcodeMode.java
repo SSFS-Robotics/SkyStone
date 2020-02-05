@@ -60,8 +60,6 @@ import beestbot.vision.SkyStoneVsionManager;
 // TODO: WARNING - When there is an issue updating the opMode, try: Build->Clean Project
 public class HankesHardcodeMode extends BeestAbsurdMode {
 
-    private MotionManager motionManager;
-
     @Override
     public void setTeam() {
         Configuration.setTeam(Team.BLUE);
@@ -89,10 +87,18 @@ public class HankesHardcodeMode extends BeestAbsurdMode {
         setSide();
         setState();
 
-        Configuration.visionManager = new SkyStoneVsionManager(hardwareMap);
+        // NEW
+        Configuration.visionManager = new SkyStoneVsionManager(hardwareMap, telemetry);
         motionManager = new MotionManager(telemetry, hardwareMap);
+
+        // INITIALIZE
         Configuration.gamepadManager = new GamepadManager();
         Configuration.visionManager.enable();
+
+        // DO TASK
+        Configuration.visionManager.init();
+
+        // UPDATE
         telemetry.addData("DEBUG", Configuration.debugMessage);
         telemetry.update();
     }
@@ -101,7 +107,8 @@ public class HankesHardcodeMode extends BeestAbsurdMode {
     public void init_loop() {
         long lStartTime = System.currentTimeMillis();
 
-        // Do Nothing
+        // DO TASK
+        Configuration.visionManager.init_loop();
 
         long timeElapsed = System.currentTimeMillis() - lStartTime;
         telemetry.addData("Record", "timeElapsed = %d", timeElapsed);
@@ -113,7 +120,10 @@ public class HankesHardcodeMode extends BeestAbsurdMode {
     public void start() {
         resetStartTime();
 
-        Configuration.tasks.offer(new Task(1, null, null, null));
+        // DO TASK
+        Configuration.visionManager.start();
+
+        Configuration.tasks.push(new Task(1, null, null, null));
 
         telemetry.addData("DEBUG", Configuration.debugMessage);
         telemetry.update();
@@ -122,6 +132,9 @@ public class HankesHardcodeMode extends BeestAbsurdMode {
     @Override
     public void loop() {
         telemetry.addData("Record", "timeElapsed = %f", time);
+
+        // DO TASK
+        Configuration.visionManager.loop();
 
         // update sensor signal and refinement
         if (Configuration.signals.size() > 10) {SensorSignals _ = Configuration.signals.poll();}
@@ -132,29 +145,34 @@ public class HankesHardcodeMode extends BeestAbsurdMode {
         }
         Configuration.signal = SensorSignals.getSensorSignals(Util.mode(Util.convertIntegers(i)));
 
-        // do the tasks in sequence
+        // TASK MANAGER
         if (Configuration.currentTask == null) {
-            Task task = Configuration.tasks.poll(); // TODO: assume it is not Null
+            // if there is no task: get next task and invoke init method
+            Task task = Configuration.tasks.pop(); // TODO: assume it is not Null
             task.setStartTime(time);
             task.setEndTime(time + task.getLastTime());
             Configuration.currentTask = task;
             try {
-                if (task.getInitMethod() != null) {task.getInitMethod().invoke(null, 0);}
+                // ref: https://www.math.uni-hamburg.de/doc/java/tutorial/reflect/object/invoke.html
+                // invoke(FatherClass, new Object[] {inputData}
+                if (task.getInitMethod() != null) {task.getInitMethod().invoke(task, 0);}
             } catch (IllegalAccessException | InvocationTargetException e) {
                 e.printStackTrace();
             }
         } else {
+            // if there is a task, if the task should end: invoke end method
             Task task = Configuration.currentTask;
             if (time > task.getEndTime()) {
                 try {
-                    if (task.getEndMethod() != null) {task.getEndMethod().invoke(null, 0);}
+                    if (task.getEndMethod() != null) {task.getEndMethod().invoke(task, 0);}
                 } catch (IllegalAccessException | InvocationTargetException e) {
                     e.printStackTrace();
                 }
                 Configuration.currentTask = null;
+            // if there is a task, if the task should continue: invoke loop method
             } else {
                 try {
-                    if (task.getLoopMethod() != null) {task.getLoopMethod().invoke(null, 0);}
+                    if (task.getLoopMethod() != null) {task.getLoopMethod().invoke(task, 0);}
                 } catch (IllegalAccessException | InvocationTargetException e) {
                     e.printStackTrace();
                 }
@@ -169,6 +187,8 @@ public class HankesHardcodeMode extends BeestAbsurdMode {
 
     @Override
     public void stop() {
+        // DO TASK
+        Configuration.visionManager.stop();
 
         telemetry.addData("Time", "time = %f", time);
         telemetry.addData("DEBUG", Configuration.debugMessage);

@@ -2,120 +2,125 @@ package beestbot.vision;
 
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.vuforia.CameraDevice;
-import com.vuforia.PIXEL_FORMAT;
-import com.vuforia.Vuforia;
 
-import org.firstinspires.ftc.robotcore.external.ClassFactory;
-import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
-import org.firstinspires.ftc.robotcore.external.navigation.VuforiaLocalizer;
-import org.firstinspires.ftc.robotcore.external.tfod.Recognition;
-import org.firstinspires.ftc.robotcore.external.tfod.TFObjectDetector;
-
-import java.util.List;
+import org.firstinspires.ftc.robotcore.external.Telemetry;
 
 import beestbot.state.SensorSignals;
+import beestbot.vision.subVisionManager.TensorflowVisionManager;
+import beestbot.vision.subVisionManager.VuforiaVisionManager;
+import kotlin.NotImplementedError;
 
 public class SkyStoneVsionManager extends NullVsionManager {
-    private static final String TFOD_MODEL_ASSET = "Skystone.tflite";
-    private static final String LABEL_FIRST_ELEMENT = "Stone";
-    private static final String LABEL_SECOND_ELEMENT = "Skystone";
-    private static final String WEBCAME_NAME = "";
-    private static final boolean VUFORIA_SCREEN = false;
     private static final boolean USE_FLASH = false;
+    private static final boolean USE_VUFORIA = true;
+    private static final boolean USE_TENSORFLOW = false;
+    private static final boolean USE_OPENCV = false;
 
-    private VuforiaLocalizer vuforia;
-    private TFObjectDetector tfod;
+    private VuforiaVisionManager vuforiaVisionManager;
+    private TensorflowVisionManager tensorflowVisionManager;
 
-    public SkyStoneVsionManager(HardwareMap hardwareMap) {
-        super(hardwareMap);
+    public SkyStoneVsionManager(HardwareMap hardwareMap, Telemetry telemetry) {
+        super(hardwareMap, telemetry);
 
-        setupVuforia(hardwareMap);
-        setupTensorflow(hardwareMap);
-    }
-
-    private void setupVuforia(HardwareMap hardwareMap) {
-
-
-        // Initiate vuforia
-        int cameraMonitorViewId = hardwareMap.appContext.getResources().getIdentifier("cameraMonitorViewId", "id", hardwareMap.appContext.getPackageName());
-
-        // if you want to show the screen, put cameraMonitorViewId in it; else leave it empty
-        VuforiaLocalizer.Parameters parameters;
-        if (VUFORIA_SCREEN) {
-            parameters = new VuforiaLocalizer.Parameters(cameraMonitorViewId);
+        if (USE_VUFORIA || USE_TENSORFLOW) {
+            vuforiaVisionManager = new VuforiaVisionManager(hardwareMap, telemetry);
         }
-        else {
-            parameters = new VuforiaLocalizer.Parameters();
+
+        if (USE_TENSORFLOW) {
+            assert vuforiaVisionManager != null;
+            tensorflowVisionManager = new TensorflowVisionManager(vuforiaVisionManager.getVuforiaLocalizer(), hardwareMap);
         }
-        if (WEBCAME_NAME != "") {parameters.cameraName = hardwareMap.get(WebcamName.class, WEBCAME_NAME);}
-        parameters.vuforiaLicenseKey = "AfdTR9D/////AAABmTD0Gry/NUengHVpoCy0wm4Eqk0VfLshQ6EDUICCgGa8JSEvUtzK5zfxO8yOev9NDT4epFyH22QcPD/fJPcEhs9eRFp0DCU6R9RCgrjYNwqbjKnwyj77nWs8lIBM3W3UZE1accXjDeEUcPBKIlV0+0ALLJwJPPmOsTidwnX1UWLUQgl4wq1wMjSRryKg6z7gJtfv7QPRzg2g9V3/oDfirNzso2jB9APcr86oCXCjNcCcWE+i/jNUhG9XgnMKpUARuSaS3aDXo/3vhm5SkAuDSxgqa/rjT8HGLPjDqFd8uySA3zNMgSzaK0161VqcC6DNA5Jbs9VmO8/G7ZHGItVp0xMcmyGZzw/IBeOhK/LySUd4";
-//        parameters.cameraDirection = VuforiaLocalizer.CameraDirection.BACK;
-
-        // Instantiate the Vuforia engine
-        vuforia = ClassFactory.getInstance().createVuforia(parameters);
-
-        // just to be consistent with OpenCV pipeline
-        Vuforia.setFrameFormat(PIXEL_FORMAT.RGB565, true);
     }
 
-    private void setupTensorflow(HardwareMap hardwareMap) {
-        if (!ClassFactory.getInstance().canCreateTFObjectDetector()){ throw new IllegalStateException("This device is not compatible with TFOD; FUCK");}
-
-        int tfodMonitorViewId = hardwareMap.appContext.getResources().getIdentifier(
-                "tfodMonitorViewId", "id", hardwareMap.appContext.getPackageName());
-        TFObjectDetector.Parameters tfodParameters = new TFObjectDetector.Parameters(tfodMonitorViewId);
-        tfodParameters.minimumConfidence = 0.8;
-        tfod = ClassFactory.getInstance().createTFObjectDetector(tfodParameters, vuforia);
-        tfod.loadModelFromAsset(TFOD_MODEL_ASSET, LABEL_FIRST_ELEMENT, LABEL_SECOND_ELEMENT);
+    public VuforiaVisionManager getVuforiaVisionManager() {
+        return vuforiaVisionManager;
     }
 
+    public TensorflowVisionManager getTensorflowVisionManager() {
+        return tensorflowVisionManager;
+    }
+
+    @Override
     public void enable() {
-        tfod.activate();
         CameraDevice.getInstance().setFlashTorchMode(USE_FLASH);
     }
 
+    @Override
     public void end() {
-        tfod.deactivate();
         CameraDevice.getInstance().setFlashTorchMode(false);
+    }
+
+    @Override
+    public void disable() {
+        CameraDevice.getInstance().setFlashTorchMode(false);
+    }
+
+    // call from main program
+    // call to sub vision manager
+    public void init() {
+        if (USE_VUFORIA) {
+            vuforiaVisionManager.init();
+        }
+        if (USE_TENSORFLOW) {
+            tensorflowVisionManager.init();
+        }
+
+    }
+
+    // call from main program
+    // call to sub vision manager
+    public void init_loop() {
+        if (USE_VUFORIA) {
+            vuforiaVisionManager.init_loop();
+        }
+        if (USE_TENSORFLOW) {
+            tensorflowVisionManager.init_loop();
+        }
+
+    }
+
+    // call from main program
+    // call to sub vision manager
+    public void start() {
+        if (USE_VUFORIA) {
+            vuforiaVisionManager.start();
+        }
+        if (USE_TENSORFLOW) {
+            tensorflowVisionManager.start();
+        }
+    }
+
+    // call from main program
+    // call to sub vision manager
+    public void loop(Telemetry telemetry) {
+        if (USE_VUFORIA) {
+            vuforiaVisionManager.loop();
+        }
+        if (USE_TENSORFLOW) {
+            tensorflowVisionManager.loop();
+        }
+    }
+
+    // call from main program
+    // call to sub vision manager
+    public void stop() {
+        if (USE_VUFORIA) {
+            vuforiaVisionManager.stop();
+        }
+        if (USE_TENSORFLOW) {
+            tensorflowVisionManager.stop();
+        }
     }
 
     public SensorSignals fetch() {
-        List<Recognition> updatedRecognitions = tfod.getUpdatedRecognitions();
-        if (updatedRecognitions != null) {
-            float maxConfidence = 0;
-            Recognition bestRecognition = null;
-            for (Recognition recognition : updatedRecognitions) {
-
-//                float width = 20.0f;
-//                float height = 12.5f;
-//                String label = recognition.getLabel();
-                float confidence = recognition.getConfidence();
-//                float left = recognition.getLeft();
-//                float top = recognition.getTop();
-//                float right = recognition.getRight();
-//                float botton = recognition.getBottom();
-
-                if (confidence > maxConfidence) {
-                    maxConfidence = confidence;
-                    bestRecognition = recognition;
-                }
-            }
-            if (bestRecognition == null) {
-                return SensorSignals.NOTHING;
-            } else if (bestRecognition.equals(LABEL_FIRST_ELEMENT)) {
-                return SensorSignals.STONE;
-            } else if (bestRecognition.equals(LABEL_SECOND_ELEMENT)) {
-                return SensorSignals.SKYSTONE;
-            } else {
-                return SensorSignals.UNKNOWN;
-            }
+        if (USE_VUFORIA) {
+            return vuforiaVisionManager.fetch();
         }
-        return SensorSignals.UNKNOWN;
+        if (USE_TENSORFLOW) {
+            return tensorflowVisionManager.fetch();
+        }
+        throw new NotImplementedError("Cannot fetch Sensor Signals because no method (Tensorflow, Vuforia, or OpenCV) is not implemented.");
     }
 
-    public void disable() {
-        tfod.shutdown();
-        CameraDevice.getInstance().setFlashTorchMode(false);
-    }
 }
 

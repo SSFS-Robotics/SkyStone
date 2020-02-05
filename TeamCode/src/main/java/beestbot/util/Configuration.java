@@ -3,6 +3,7 @@ package beestbot.util;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.Queue;
+import java.util.Stack;
 
 import beestbot.io.GamepadManager;
 import beestbot.state.Inverse;
@@ -45,7 +46,7 @@ public class Configuration {
     private static Side side;
     private static SensorSignals sensorSignal = SensorSignals.UNKNOWN;
 
-    public static Queue<Task> tasks = new LinkedList<>();
+    public static Stack<Task> tasks = new Stack<>();
     public static Queue<SensorSignals> signals = new LinkedList<>();
     public static SensorSignals signal;
     public static Task currentTask;
@@ -73,9 +74,11 @@ public class Configuration {
 
     public static void init() {
         team = null;
+        inverse = Inverse.X_AXIS;
         state = null;
         side = null;
-        tasks = new LinkedList<>();
+        sensorSignal = SensorSignals.UNKNOWN;
+        tasks = new Stack<>();
         signals = new LinkedList<>();
         signal = null;
         currentTask = null;

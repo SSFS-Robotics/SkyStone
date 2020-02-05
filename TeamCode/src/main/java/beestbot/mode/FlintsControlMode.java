@@ -17,20 +17,21 @@ public class FlintsControlMode extends HankesAbsurdIntelligence {
     @Override
     public void setTeam() {
         Configuration.setTeam(Team.BLUE);
-    } // TODO: subsitude this with a new value
+    } // TODO: substitute this with a new value
 
     @Override
     public void setSide() {
         Configuration.setSide(Side.FOUNDATION);
-    } // TODO: subsitude this with a new value
+    } // TODO: substitute this with a new value
 
     @Override
     public void setState() {
         Configuration.setState(State.CONTROL);
     }
+
     @Override
     public void setVisionManager() {
 //        mineralVisionManager = new MineralVisionManager(hardwareMap, Configuration.INFER, Configuration.flashLight);
-        Configuration.visionManager = new SkyStoneVsionManager(hardwareMap);
+        Configuration.visionManager = new SkyStoneVsionManager(hardwareMap, telemetry);
     }
 }

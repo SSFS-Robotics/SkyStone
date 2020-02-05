@@ -29,6 +29,6 @@ public class RecordBlueQuarryWithoutVision extends HankesAbsurdIntelligence {
 
     @Override
     public void setVisionManager() {
-        Configuration.visionManager = new NullVsionManager(hardwareMap);
+        Configuration.visionManager = new NullVsionManager(hardwareMap, telemetry);
     }
 }

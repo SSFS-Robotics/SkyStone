@@ -1,6 +1,6 @@
 package beestbot.state;
 
 public enum State {
-    AUTONOMOUS, CONTROL, RECORDING, HARDCODE;
+    PLAYBACK, CONTROL, RECORDING, HARDCODE;
 }
 

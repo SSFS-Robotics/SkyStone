@@ -1,32 +1,4 @@
 package beestbot.mode.AbsurdMode;
-/* Copyright (c) 2018 FIRST. All rights reserved.
- *
- * Redistribution and use in source and binary forms, with or without modification,
- * are permitted (subject to the limitations in the disclaimer below) provided that
- * the following conditions are met:
- *
- * Redistributions of source code must retain the above copyright notice, this list
- * of conditions and the following disclaimer.
- *
- * Redistributions in binary form must reproduce the above copyright notice, this
- * list of conditions and the following disclaimer in the documentation and/or
- * other materials provided with the distribution.
- *
- * Neither the name of FIRST nor the names of its contributors may be used to endorse or
- * promote products derived from this software without specific prior written permission.
- *
- * NO EXPRESS OR IMPLIED LICENSES TO ANY PARTY'S PATENT RIGHTS ARE GRANTED BY THIS
- * LICENSE. THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
- * "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO,
- * THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
- * ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE
- * FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL
- * DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR
- * SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER
- * CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY,
- * OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
- * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
- */
 
 import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
@@ -36,23 +8,18 @@ import beestbot.io.GamepadManager;
 import beestbot.motion.MotionManager;
 import beestbot.util.Configuration;
 
-/**
- * This 2018-2019 OpMode illustrates the basics of using the TensorFlow Object Detection API to
- * determine the position of the gold and silver minerals.
- *
- * Use Android Studio to Copy this Class, and Paste it into your team's code folder with a new name.
- * Remove or comment out the @Disabled line to add this opmode to the Driver Station OpMode list.
- *
- * IMPORTANT: In order to use this OpMode, you need to obtain your own Vuforia license key as
- * is explained below.
- */
 @TeleOp(name = "BeestAbsurdMode", group = "OpMode")
 @Disabled
+
 // TODO: WARNING - When there is an issue updating the opMode, try: Build->Clean Project
 public class BeestAbsurdMode extends OpMode {
+    /*
+    Description: This is a base mode for any OpMode in the design.
+    All other OpMode should inherit this mode.
+     */
+
     // Declare OpMode members.
     // 1000ticks = 1sec
-
 
     // variables in the father class
     // time = 0.0;
@@ -73,7 +40,7 @@ public class BeestAbsurdMode extends OpMode {
     // resetStartTime() set time to 0
     // internalPreInit(); internalPostInitLoop(); internalPostLoop();
 
-    private MotionManager motionManager;
+    public MotionManager motionManager;
 
     public void setTeam() {
         throw new UnsupportedOperationException("setTeam() method not implemented!");
@@ -88,8 +55,34 @@ public class BeestAbsurdMode extends OpMode {
         throw new UnsupportedOperationException("setVisionManager() method not implemented!");
     }
 
+
+    public void sub_init() {
+        throw new UnsupportedOperationException("sub_init() method not implemented");
+    }
+
+    public void sub_init_loop() {
+        throw new UnsupportedOperationException("sub_init_loop() method not implemented");
+    }
+
+    public void sub_start() {
+        throw new UnsupportedOperationException("sub_start() method not implemented");
+    }
+
+    public void sub_loop() {
+        throw new UnsupportedOperationException("sub_loop() method not implemented");
+    }
+
+    public void sub_stop() {
+        throw new UnsupportedOperationException("sub_stop() method not implemented");
+    }
+
     @Override
     public void init() {
+        // CAUTION: Configuration must be re-initialized
+        // otherwise, memory will remain in the app when
+        // switching to different modes or re-run the program
+        Configuration.init();
+
         super.msStuckDetectInit     = 5000;
         super.msStuckDetectInitLoop = 5000;
         super.msStuckDetectStart    = 5000;
@@ -102,48 +95,63 @@ public class BeestAbsurdMode extends OpMode {
         setState();
         setVisionManager();
 
-//        mineralVisionManager = new MineralVisionManager(hardwareMap, Configuration.INFER, Configuration.flashLight);
-//        Configuration.visionManager = new SkyStoneVsionManager(hardwareMap, Configuration.INFER, Configuration.flashLight);
+        // 3 managers get initiated
         motionManager = new MotionManager(telemetry, hardwareMap);
         Configuration.gamepadManager = new GamepadManager();
         Configuration.visionManager.enable();
+
+        // TODO
+        sub_init();
+
+        // debug
         telemetry.addData("DEBUG", Configuration.debugMessage);
         telemetry.update();
     }
 
     @Override
     public void init_loop() {
+        // debug
         long lStartTime = System.currentTimeMillis();
 
-        // ...
+        sub_init_loop();
 
+        // TODO
+        // debug
         long timeElapsed = System.currentTimeMillis() - lStartTime;
-        telemetry.addData("Record", "timeElapsed = %d", timeElapsed);
+        telemetry.addData("DEBUG", "timeElapsed = %d", timeElapsed);
         telemetry.addData("DEBUG", Configuration.debugMessage);
         telemetry.update();
     }
 
     @Override
     public void start() {
-        Configuration.visionManager.disable();
+        // debug
         resetStartTime();
 
-        // ...
+        // TODO
+        sub_start();
 
+        // debug
         telemetry.addData("DEBUG", Configuration.debugMessage);
         telemetry.update();
     }
 
     @Override
     public void loop() {
-        // ...
+        // TODO
+        sub_loop();
+
+        // debug
         telemetry.addData("DEBUG", Configuration.debugMessage);
         telemetry.update();
     }
 
     @Override
     public void stop() {
-        // ...
+        // TODO
+        sub_stop();
+
+        // debug
         telemetry.addData("Time", "time = %f", time);
         telemetry.addData("DEBUG", Configuration.debugMessage);
         telemetry.update();

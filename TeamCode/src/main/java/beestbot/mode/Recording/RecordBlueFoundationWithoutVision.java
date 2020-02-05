@@ -30,6 +30,6 @@ public class RecordBlueFoundationWithoutVision extends HankesAbsurdIntelligence 
 
     @Override
     public void setVisionManager() {
-        Configuration.visionManager = new NullVsionManager(hardwareMap);
+        Configuration.visionManager = new NullVsionManager(hardwareMap, telemetry);
     }
 }

@@ -2,6 +2,7 @@ package beestbot.state;
 
 import com.qualcomm.robotcore.util.Range;
 
+import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.robotcore.external.matrices.VectorF;
 
 import java.lang.reflect.InvocationTargetException;
@@ -38,12 +39,14 @@ public class Task {
     private Method initMethod;
     private Method loopMethod;
     private Method endMethod;
+    private Telemetry telemetry;
 
-    public Task(double lastTime, Method initMethod, Method loopMethod, Method endMethod) throws NoSuchMethodException {
+    public Task(double lastTime, Method initMethod, Method loopMethod, Method endMethod, Telemetry telemetry) throws NoSuchMethodException {
         this.lastTime = lastTime;
         this.initMethod = initMethod;
         this.loopMethod = loopMethod;
         this.endMethod = endMethod;
+        this.telemetry = telemetry;
 
         if (initMethod == null || loopMethod == null || endMethod == null) {
             Method m = getMethod("doNothing");
@@ -125,7 +128,7 @@ public class Task {
      */
     public void doNothing() {
     }
-    public void goToSkyStone() {
+    public void goToSkyStone(){
         VectorF vector = ((SkyStoneVsionManager)Configuration.visionManager).getVuforiaVisionManager().loop();
         if (vector != null) {
             Float x = vector.get(0); // x: if the robot is close to the object, the value will be 0, otherwise bigger than 0
@@ -149,21 +152,22 @@ public class Task {
             Configuration.gamepadManager.forceBackLeftMotor = Range.clip(LB_1, -1f, 1f);
             Configuration.gamepadManager.forceBackRightMotor = -Range.clip(RB_1, -1f, 1f);
 
-            if (x * y < 10) {
+            telemetry.addData("TASK", "x*y = " + x * y);
+            if (x * y < 100) {
                 Configuration.gamepadManager.forceFrontLeftMotor = 0;
                 Configuration.gamepadManager.forceFrontRightMotor = 0;
                 Configuration.gamepadManager.forceBackLeftMotor = 0;
                 Configuration.gamepadManager.forceBackRightMotor = 0;
 
-                if (this.getEndMethod() != null) {
-                    try {
-                        this.endMethod.invoke(this, 0);
-                    } catch (IllegalAccessException | InvocationTargetException e) {
-                        e.printStackTrace();
-                    }
-                    Configuration.currentTask = null;
-                    return;
-                }
+                telemetry.addData("TASK", "Trying to invoke endMethod to interrupt Tasks");
+//                telemetry.update();
+//                try {
+//                    this.endMethod.invoke(this.getClass()); // TODO: this line may be problematic
+//                } catch (IllegalAccessException | InvocationTargetException e) {
+//                    e.printStackTrace();
+//                }
+                // TODO: IMPORTANT - The State Machine will not activate endTask when it is canceled by the Task
+                Configuration.currentTask = null;
 
             }
         } else {

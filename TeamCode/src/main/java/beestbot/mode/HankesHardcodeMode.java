@@ -89,15 +89,17 @@ public class HankesHardcodeMode extends BeestAbsurdMode {
     @Override
     public void sub_start() {
         try { // TODO: CAREFUL The stack will execute backward
-            Configuration.tasks.push(new Task(2, null, Task.getMethod("dropBlock"), Task.getMethod("stop")));
+            Configuration.tasks.push(new Task(2, null, Task.getMethod("dropBlock"), Task.getMethod("stop"), telemetry));
             telemetry.addData("DEBUG", "added dropBlock");
-            Configuration.tasks.push(new Task(2, null, Task.getMethod("moveFront"), Task.getMethod("stop")));
+            Configuration.tasks.push(new Task(2, null, Task.getMethod("moveFront"), Task.getMethod("stop"), telemetry));
             telemetry.addData("DEBUG", "added moveFront");
-            Configuration.tasks.push(new Task(2, null, Task.getMethod("grabBlock"), Task.getMethod("stop")));
+            Configuration.tasks.push(new Task(2, null, Task.getMethod("grabBlock"), Task.getMethod("stop"), telemetry));
             telemetry.addData("DEBUG", "added grabBlock");
-            Configuration.tasks.push(new Task(60, null, Task.getMethod("goToSkyStone"), Task.getMethod("stop")));
+            Configuration.tasks.push(new Task(60, null, Task.getMethod("goToSkyStone"), Task.getMethod("stop"), telemetry));
             telemetry.addData("DEBUG", "added goToSkyStone");
         } catch (NoSuchMethodException e) {
+            telemetry.addData("CRASH", "There is a crash when you tries to add tasks");
+            telemetry.update();
             e.printStackTrace();
         }
     }
@@ -116,19 +118,28 @@ public class HankesHardcodeMode extends BeestAbsurdMode {
 
         // TASK MANAGER
         if (Configuration.currentTask == null) {
-            telemetry.addData("DEBUG", "No Current Task");
-            // if there is no task: get next task and invoke init method
-            Task task = Configuration.tasks.pop(); // TODO: assume it is not Null
-            task.setStartTime(time);
-            task.setEndTime(time + task.getLastTime());
-            Configuration.currentTask = task;
-            telemetry.addData("DEBUG", "Setting a Task");
-            try {
-                // ref: https://www.math.uni-hamburg.de/doc/java/tutorial/reflect/object/invoke.html
-                // invoke(FatherClass, new Object[] {inputData}
-                if (task.getInitMethod() != null) {task.getInitMethod().invoke(task);}
-            } catch (IllegalAccessException | InvocationTargetException e) {
-                e.printStackTrace();
+            if (!Configuration.tasks.empty()) {
+                telemetry.addData("DEBUG", "No Current Task");
+                // if there is no task: get next task and invoke init method
+                Task task = Configuration.tasks.pop(); // TODO: assume it is not Null
+                task.setStartTime(time);
+                task.setEndTime(time + task.getLastTime());
+                Configuration.currentTask = task;
+                telemetry.addData("DEBUG", "Setting a Task");
+                try {
+                    // ref: https://www.math.uni-hamburg.de/doc/java/tutorial/reflect/object/invoke.html
+                    // invoke(FatherClass, new Object[] {inputData}
+                    if (task.getInitMethod() != null) {task.getInitMethod().invoke(task);}
+                } catch (IllegalAccessException | InvocationTargetException e) {
+                    telemetry.addData("CRASH", "There is a crash when you tries to getInitMethod()");
+                    telemetry.update();
+                    e.printStackTrace();
+                }
+            } else {
+                telemetry.addData("DEBUG", "ALL TASKS FINISHED! CHEER!");
+                telemetry.addData("DEBUG", "ALL TASKS FINISHED! CHEER!");
+                telemetry.addData("DEBUG", "ALL TASKS FINISHED! CHEER!");
+                telemetry.addData("DEBUG", "ALL TASKS FINISHED! CHEER!");
             }
         } else {
             telemetry.addData("DEBUG", "There is a Task");
@@ -139,6 +150,8 @@ public class HankesHardcodeMode extends BeestAbsurdMode {
                 try {
                     if (task.getEndMethod() != null) {task.getEndMethod().invoke(task);}
                 } catch (IllegalAccessException | InvocationTargetException e) {
+                    telemetry.addData("CRASH", "There is a crash when you tries to getEndMethod()");
+                    telemetry.update();
                     e.printStackTrace();
                 }
                 Configuration.currentTask = null;
@@ -148,6 +161,8 @@ public class HankesHardcodeMode extends BeestAbsurdMode {
                 try {
                     if (task.getLoopMethod() != null) {task.getLoopMethod().invoke(task);}
                 } catch (IllegalAccessException | InvocationTargetException e) {
+                    telemetry.addData("CRASH", "There is a crash when you tries to getLoopMethod()");
+                    telemetry.update();
                     e.printStackTrace();
                 }
             }
@@ -155,7 +170,11 @@ public class HankesHardcodeMode extends BeestAbsurdMode {
         }
 
         motionManager.updateWithException(Configuration.gamepadManager);
-        telemetry.addData("TASK", "loop: " + Configuration.currentTask.getLoopMethod().getName());
+        if (Configuration.currentTask != null) {
+            telemetry.addData("TASK", "loop: " + Configuration.currentTask.getLoopMethod().getName());
+        } else {
+            telemetry.addData("TASK", "loop: null");
+        }
     }
 
     @Override

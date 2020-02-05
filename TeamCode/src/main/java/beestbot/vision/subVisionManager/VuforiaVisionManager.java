@@ -82,7 +82,7 @@ public class VuforiaVisionManager {
     private VuforiaLocalizer.Parameters parameters;
 
     private static final String WEBCAME_NAME = "Webcam 1";
-    private static final boolean VUFORIA_SCREEN = false;
+    private static final boolean VUFORIA_SCREEN = true;
 
     private HardwareMap hardwareMap;
     private Telemetry telemetry;
@@ -357,7 +357,7 @@ public class VuforiaVisionManager {
             telemetry.addData("Visible Target", "none");
         }
         telemetry.addData("Skystone Position", positionSkystone);
-        telemetry.update();
+//        telemetry.update(); -> This is handeled in the main OpMode
 
         return translation;
     }

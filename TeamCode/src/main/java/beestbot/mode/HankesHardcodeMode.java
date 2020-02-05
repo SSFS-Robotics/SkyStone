@@ -72,76 +72,38 @@ public class HankesHardcodeMode extends BeestAbsurdMode {
     public void setState() {
         Configuration.setState(State.RECORDING);
     }
-
-
     @Override
-    public void init() {
-        super.msStuckDetectInit     = 5000;
-        super.msStuckDetectInitLoop = 5000;
-        super.msStuckDetectStart    = 5000;
-        super.msStuckDetectLoop     = 5000;
-        super.msStuckDetectStop     = 10000;
-
-        // initiate modes based on specific settings
-        setTeam();
-        setSide();
-        setState();
-
-        // NEW
+    public void setVisionManager() {
         Configuration.visionManager = new SkyStoneVsionManager(hardwareMap, telemetry);
-        motionManager = new MotionManager(telemetry, hardwareMap);
-
-        // INITIALIZE
-        Configuration.gamepadManager = new GamepadManager();
-
-        // DO TASK
-        Configuration.visionManager.init();
-
-        // UPDATE
-        telemetry.addData("DEBUG", Configuration.debugMessage);
-        telemetry.update();
     }
 
     @Override
-    public void init_loop() {
-        long lStartTime = System.currentTimeMillis();
+    public void sub_init() {
 
-        // DO TASK
-        Configuration.visionManager.init_loop();
-
-        long timeElapsed = System.currentTimeMillis() - lStartTime;
-        telemetry.addData("Record", "timeElapsed = %d", timeElapsed);
-        telemetry.addData("DEBUG", Configuration.debugMessage);
-        telemetry.update();
     }
 
     @Override
-    public void start() {
-        resetStartTime();
+    public void sub_init_loop() {
+    }
 
-        // DO TASK
-        Configuration.visionManager.start();
-
+    @Override
+    public void sub_start() {
         try { // TODO: CAREFUL The stack will execute backward
             Configuration.tasks.push(new Task(2, null, Task.getMethod("dropBlock"), Task.getMethod("stop")));
+            telemetry.addData("DEBUG", "added dropBlock");
             Configuration.tasks.push(new Task(2, null, Task.getMethod("moveFront"), Task.getMethod("stop")));
+            telemetry.addData("DEBUG", "added moveFront");
             Configuration.tasks.push(new Task(2, null, Task.getMethod("grabBlock"), Task.getMethod("stop")));
+            telemetry.addData("DEBUG", "added grabBlock");
             Configuration.tasks.push(new Task(60, null, Task.getMethod("goToSkyStone"), Task.getMethod("stop")));
+            telemetry.addData("DEBUG", "added goToSkyStone");
         } catch (NoSuchMethodException e) {
             e.printStackTrace();
         }
-
-        telemetry.addData("DEBUG", Configuration.debugMessage);
-        telemetry.update();
     }
 
     @Override
-    public void loop() {
-        telemetry.addData("Record", "timeElapsed = %f", time);
-
-        // DO TASK
-        Configuration.visionManager.loop();
-
+    public void sub_loop() {
         // update sensor signal and refinement
         if (Configuration.signals.size() > 10) {SensorSignals _ = Configuration.signals.poll();}
         Configuration.signals.offer(Configuration.visionManager.fetch());
@@ -150,35 +112,41 @@ public class HankesHardcodeMode extends BeestAbsurdMode {
             i.add(ss.getValue());
         }
         Configuration.signal = SensorSignals.getSensorSignals(Util.mode(Util.convertIntegers(i)));
+        telemetry.addData("DEBUG", "Finished Setting SensorSignals");
 
         // TASK MANAGER
         if (Configuration.currentTask == null) {
+            telemetry.addData("DEBUG", "No Current Task");
             // if there is no task: get next task and invoke init method
             Task task = Configuration.tasks.pop(); // TODO: assume it is not Null
             task.setStartTime(time);
             task.setEndTime(time + task.getLastTime());
             Configuration.currentTask = task;
+            telemetry.addData("DEBUG", "Setting a Task");
             try {
                 // ref: https://www.math.uni-hamburg.de/doc/java/tutorial/reflect/object/invoke.html
                 // invoke(FatherClass, new Object[] {inputData}
-                if (task.getInitMethod() != null) {task.getInitMethod().invoke(task, 0);}
+                if (task.getInitMethod() != null) {task.getInitMethod().invoke(task);}
             } catch (IllegalAccessException | InvocationTargetException e) {
                 e.printStackTrace();
             }
         } else {
+            telemetry.addData("DEBUG", "There is a Task");
             // if there is a task, if the task should end: invoke end method
             Task task = Configuration.currentTask;
             if (time > task.getEndTime()) {
+                telemetry.addData("DEBUG", "time > task.getEndTime()");
                 try {
-                    if (task.getEndMethod() != null) {task.getEndMethod().invoke(task, 0);}
+                    if (task.getEndMethod() != null) {task.getEndMethod().invoke(task);}
                 } catch (IllegalAccessException | InvocationTargetException e) {
                     e.printStackTrace();
                 }
                 Configuration.currentTask = null;
-            // if there is a task, if the task should continue: invoke loop method
+                // if there is a task, if the task should continue: invoke loop method
             } else {
+                telemetry.addData("DEBUG", "time < task.getEndTime()");
                 try {
-                    if (task.getLoopMethod() != null) {task.getLoopMethod().invoke(task, 0);}
+                    if (task.getLoopMethod() != null) {task.getLoopMethod().invoke(task);}
                 } catch (IllegalAccessException | InvocationTargetException e) {
                     e.printStackTrace();
                 }
@@ -187,18 +155,11 @@ public class HankesHardcodeMode extends BeestAbsurdMode {
         }
 
         motionManager.updateWithException(Configuration.gamepadManager);
-        telemetry.addData("DEBUG", Configuration.debugMessage);
-        telemetry.update();
+        telemetry.addData("TASK", "loop: " + Configuration.currentTask.getLoopMethod().getName());
     }
 
     @Override
-    public void stop() {
-        // DO TASK
-        Configuration.visionManager.stop();
+    public void sub_stop() {
 
-        telemetry.addData("Time", "time = %f", time);
-        telemetry.addData("DEBUG", Configuration.debugMessage);
-        telemetry.update();
     }
-
 }

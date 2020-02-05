@@ -153,6 +153,7 @@ public class BeestAbsurdMode extends OpMode {
         sub_loop();
 
         // debug
+        telemetry.addData("DEBUG", "timeElapsed = %f", time);
         telemetry.addData("DEBUG", Configuration.debugMessage);
         telemetry.update();
     }

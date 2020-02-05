@@ -80,6 +80,7 @@ public class Task {
 
     // getDeclaredMethods includes all methods declared by the class itself, whereas getMethods returns only public methods, but also those inherited from a base class (here from java.lang.Object).
     // getMethod(methodName, inputParameter)
+    // TODO: IMPORTANT, you should not expect the user to input any arguments here
     public static Method getMethod(String name) throws NoSuchMethodException {
         switch (name) {
             case "stop":
@@ -131,10 +132,10 @@ public class Task {
             Float y = vector.get(1); // y: if the robot is on the left of the object, the value will be negative, otherwise positive
             // z: if the robot is higher than the object, the value will be positive, otherwise negative
 
-            float LF_1 = (y - -x - -0) * 1.0f + (y - -x - 0) * 0.4f;
-            float RF_1 = (y + -x + -0) * 1.0f + (y + -x + 0) * 0.4f;
-            float LB_1 = (y + -x - -0) * 1.0f + (y + -x - 0) * 0.4f;
-            float RB_1 = (y - -x + -0) * 1.0f + (y - -x + 0) * 0.4f;
+            float LF_1 = (y - -x - -0) * 1.0f;
+            float RF_1 = (y + -x + -0) * 1.0f;
+            float LB_1 = (y + -x - -0) * 1.0f;
+            float RB_1 = (y - -x + -0) * 1.0f;
             Float[] decMax_1 = new Float[]{Math.abs(LF_1), Math.abs(RF_1), Math.abs(LB_1), Math.abs(RB_1)};
             List<Float> a_1 = new ArrayList<>(Arrays.asList(decMax_1));
             float max_1 = Range.clip(Collections.max(a_1), 1f, Float.MAX_VALUE);

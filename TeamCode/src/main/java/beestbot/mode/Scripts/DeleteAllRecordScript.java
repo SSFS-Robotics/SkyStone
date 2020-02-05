@@ -22,13 +22,13 @@ public class DeleteAllRecordScript extends ScriptAbsurdMode {
         boolean success = FileSerialization.removeAllInternalRecordFiles(hardwareMap.appContext, telemetry);
 
         telemetry.addData("DEBUG", Configuration.debugMessage);
-        telemetry.update();
+//        telemetry.update(); -> This is handeled in the main OpMode
 
         // stop after success
         if (success) {
             Configuration.debugMessage = Configuration.debugMessage + "DEBUG: Script runs successfully!";
             telemetry.addData("DEBUG", Configuration.debugMessage);
-            telemetry.update();
+//            telemetry.update(); -> This is handeled in the main OpMode
             requestOpModeStop();
         }
     }

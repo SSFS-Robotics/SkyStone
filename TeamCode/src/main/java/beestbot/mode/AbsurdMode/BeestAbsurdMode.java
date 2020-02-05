@@ -98,7 +98,9 @@ public class BeestAbsurdMode extends OpMode {
         // 3 managers get initiated
         motionManager = new MotionManager(telemetry, hardwareMap);
         Configuration.gamepadManager = new GamepadManager();
-        Configuration.visionManager.enable();
+
+        // vision manager
+        Configuration.visionManager.init();
 
         // TODO
         sub_init();
@@ -112,6 +114,9 @@ public class BeestAbsurdMode extends OpMode {
     public void init_loop() {
         // debug
         long lStartTime = System.currentTimeMillis();
+
+        // vision manager
+        Configuration.visionManager.init_loop();
 
         sub_init_loop();
 
@@ -128,6 +133,9 @@ public class BeestAbsurdMode extends OpMode {
         // debug
         resetStartTime();
 
+        // vision manager
+        Configuration.visionManager.start();
+
         // TODO
         sub_start();
 
@@ -138,6 +146,9 @@ public class BeestAbsurdMode extends OpMode {
 
     @Override
     public void loop() {
+        // vision manager
+        Configuration.visionManager.loop();
+
         // TODO
         sub_loop();
 
@@ -148,6 +159,9 @@ public class BeestAbsurdMode extends OpMode {
 
     @Override
     public void stop() {
+        // vision manager
+        Configuration.visionManager.stop();
+
         // TODO
         sub_stop();
 

@@ -93,7 +93,6 @@ public class HankesHardcodeMode extends BeestAbsurdMode {
 
         // INITIALIZE
         Configuration.gamepadManager = new GamepadManager();
-        Configuration.visionManager.enable();
 
         // DO TASK
         Configuration.visionManager.init();
@@ -123,7 +122,14 @@ public class HankesHardcodeMode extends BeestAbsurdMode {
         // DO TASK
         Configuration.visionManager.start();
 
-        Configuration.tasks.push(new Task(1, null, null, null));
+        try { // TODO: CAREFUL The stack will execute backward
+            Configuration.tasks.push(new Task(2, null, Task.getMethod("dropBlock"), Task.getMethod("stop")));
+            Configuration.tasks.push(new Task(2, null, Task.getMethod("moveFront"), Task.getMethod("stop")));
+            Configuration.tasks.push(new Task(2, null, Task.getMethod("grabBlock"), Task.getMethod("stop")));
+            Configuration.tasks.push(new Task(60, null, Task.getMethod("goToSkyStone"), Task.getMethod("stop")));
+        } catch (NoSuchMethodException e) {
+            e.printStackTrace();
+        }
 
         telemetry.addData("DEBUG", Configuration.debugMessage);
         telemetry.update();
@@ -193,7 +199,6 @@ public class HankesHardcodeMode extends BeestAbsurdMode {
         telemetry.addData("Time", "time = %f", time);
         telemetry.addData("DEBUG", Configuration.debugMessage);
         telemetry.update();
-        Configuration.visionManager.disable();
     }
 
 }

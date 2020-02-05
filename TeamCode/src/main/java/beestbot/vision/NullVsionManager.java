@@ -16,21 +16,10 @@ public class NullVsionManager implements VisionManager {
         this.telemetry = telemetry;
     }
 
-    public void enable() {
-
-    }
-
-    public void end() {
-
-    }
-
     public SensorSignals fetch() {
         return SensorSignals.UNKNOWN;
     }
 
-    public void disable() {
-
-    }
 
     @Override
     public void init() {

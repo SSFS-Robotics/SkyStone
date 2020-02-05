@@ -89,7 +89,6 @@ public class HankesAbsurdIntelligence extends BeestAbsurdMode {
     @Override
     public void sub_start() {
 //        if (Configuration.getSensorSignal() == SensorSignals.UNKNOWN) throw new InvalidParameterException("SensorSignals cannot be 'UNKNOWN'");
-        Configuration.visionManager.disable();
         if (Configuration.getState() == State.PLAYBACK) {
             Configuration.debugMessage = Configuration.debugMessage + "Getting file in " + Configuration.getFileName() + "; ";
 
@@ -126,7 +125,6 @@ public class HankesAbsurdIntelligence extends BeestAbsurdMode {
 
     @Override
     public void sub_stop() {
-        Configuration.visionManager.disable();
         if (Configuration.getState() == State.RECORDING) {
             Configuration.gamepadManager.updateInitial();
 

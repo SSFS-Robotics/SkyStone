@@ -40,24 +40,11 @@ public class SkyStoneVsionManager extends NullVsionManager {
         return tensorflowVisionManager;
     }
 
-    @Override
-    public void enable() {
-        CameraDevice.getInstance().setFlashTorchMode(USE_FLASH);
-    }
-
-    @Override
-    public void end() {
-        CameraDevice.getInstance().setFlashTorchMode(false);
-    }
-
-    @Override
-    public void disable() {
-        CameraDevice.getInstance().setFlashTorchMode(false);
-    }
 
     // call from main program
     // call to sub vision manager
     public void init() {
+        CameraDevice.getInstance().setFlashTorchMode(USE_FLASH);
         if (USE_VUFORIA) {
             vuforiaVisionManager.init();
         }
@@ -104,6 +91,7 @@ public class SkyStoneVsionManager extends NullVsionManager {
     // call from main program
     // call to sub vision manager
     public void stop() {
+        CameraDevice.getInstance().setFlashTorchMode(false);
         if (USE_VUFORIA) {
             vuforiaVisionManager.stop();
         }

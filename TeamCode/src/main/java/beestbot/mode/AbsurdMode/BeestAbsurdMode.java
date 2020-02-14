@@ -83,27 +83,50 @@ public class BeestAbsurdMode extends OpMode {
         // switching to different modes or re-run the program
         Configuration.init();
 
-        super.msStuckDetectInit     = 5000;
+        // tmp
+        telemetry.addData("DEBUG", "CONFIG INIT");
+        telemetry.update();
+
+        super.msStuckDetectInit = 5000;
         super.msStuckDetectInitLoop = 5000;
-        super.msStuckDetectStart    = 5000;
-        super.msStuckDetectLoop     = 5000;
-        super.msStuckDetectStop     = 10000;
+        super.msStuckDetectStart = 5000;
+        super.msStuckDetectLoop = 5000;
+        super.msStuckDetectStop = 10000;
 
         // initiate modes based on specific settings
         setTeam();
         setSide();
         setState();
+        // tmp
+        telemetry.addData("DEBUG", "VISION");
+        telemetry.update();
         setVisionManager();
+        // tmp
+        telemetry.addData("DEBUG", "FINISH VISION");
+        telemetry.update();
 
         // 3 managers get initiated
         motionManager = new MotionManager(telemetry, hardwareMap);
+        // tmp
+        telemetry.addData("DEBUG", "FINISH MOTION");
+        telemetry.update();
+
         Configuration.gamepadManager = new GamepadManager();
+        // tmp
+        telemetry.addData("DEBUG", "FINISH GAMEPAD");
+        telemetry.update();
 
         // vision manager
         Configuration.visionManager.init();
+        // tmp
+        telemetry.addData("DEBUG", "VISION INIT FINISH");
+        telemetry.update();
 
         // TODO
         sub_init();
+        // tmp
+        telemetry.addData("DEBUG", "JOB FINISH");
+        telemetry.update();
 
         // debug
         telemetry.addData("DEBUG", Configuration.debugMessage);

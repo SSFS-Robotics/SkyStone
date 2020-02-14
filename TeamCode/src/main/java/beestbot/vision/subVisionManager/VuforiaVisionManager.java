@@ -105,7 +105,13 @@ public class VuforiaVisionManager {
             parameters = new VuforiaLocalizer.Parameters();
         }
 
-        if (WEBCAME_NAME != "") {parameters.cameraName = hardwareMap.get(WebcamName.class, WEBCAME_NAME);}
+        if (!WEBCAME_NAME.equals("")) {
+            try {
+                parameters.cameraName = hardwareMap.get(WebcamName.class, WEBCAME_NAME);
+            } catch (Exception ignored) {
+
+            }
+        }
 
         // VuforiaLocalizer.Parameters parameters = new VuforiaLocalizer.Parameters();
 

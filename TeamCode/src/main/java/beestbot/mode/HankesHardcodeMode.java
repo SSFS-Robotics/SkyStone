@@ -89,14 +89,22 @@ public class HankesHardcodeMode extends BeestAbsurdMode {
     @Override
     public void sub_start() {
         try { // TODO: CAREFUL The stack will execute backward
+            Configuration.tasks.push(new Task(3, null, Task.getMethod("goToSkyStone"), Task.getMethod("stop"), telemetry));
+            Configuration.tasks.push(new Task(3, null, Task.getMethod("turnLeft"), Task.getMethod("stop"), telemetry));
+            Configuration.tasks.push(new Task(3, null, Task.getMethod("moveBack"), Task.getMethod("stop"), telemetry));
+            Configuration.tasks.push(new Task(3, null, Task.getMethod("releaseFoundation"), Task.getMethod("stop"), telemetry));
+            Configuration.tasks.push(new Task(3, null, Task.getMethod("turnRight"), Task.getMethod("stop"), telemetry));
+            Configuration.tasks.push(new Task(3, null, Task.getMethod("moveBack"), Task.getMethod("stop"), telemetry));
+            Configuration.tasks.push(new Task(3, null, Task.getMethod("grabFoundation"), Task.getMethod("stop"), telemetry));
+            Configuration.tasks.push(new Task(3, null, Task.getMethod("moveLeft"), Task.getMethod("stop"), telemetry));
+            Configuration.tasks.push(new Task(3, null, Task.getMethod("turnLeft"), Task.getMethod("stop"), telemetry));
+            Configuration.tasks.push(new Task(3, null, Task.getMethod("moveFront"), Task.getMethod("stop"), telemetry));
             Configuration.tasks.push(new Task(2, null, Task.getMethod("dropBlock"), Task.getMethod("stop"), telemetry));
-            telemetry.addData("DEBUG", "added dropBlock");
-            Configuration.tasks.push(new Task(2, null, Task.getMethod("moveFront"), Task.getMethod("stop"), telemetry));
-            telemetry.addData("DEBUG", "added moveFront");
+            Configuration.tasks.push(new Task(3, null, Task.getMethod("moveFront"), Task.getMethod("stop"), telemetry));
+            Configuration.tasks.push(new Task(1, null, Task.getMethod("moveRight"), Task.getMethod("stop"), telemetry));
             Configuration.tasks.push(new Task(2, null, Task.getMethod("grabBlock"), Task.getMethod("stop"), telemetry));
-            telemetry.addData("DEBUG", "added grabBlock");
-            Configuration.tasks.push(new Task(60, null, Task.getMethod("goToSkyStone"), Task.getMethod("stop"), telemetry));
-            telemetry.addData("DEBUG", "added goToSkyStone");
+            Configuration.tasks.push(new Task(1, null, Task.getMethod("moveLeft"), Task.getMethod("stop"), telemetry));
+            Configuration.tasks.push(new Task(999, null, Task.getMethod("goToSkyStone"), Task.getMethod("stop"), telemetry));
         } catch (NoSuchMethodException e) {
             telemetry.addData("CRASH", "There is a crash when you tries to add tasks");
             telemetry.update();

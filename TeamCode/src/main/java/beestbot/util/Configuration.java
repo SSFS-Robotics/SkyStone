@@ -18,19 +18,25 @@ import beestbot.vision.VisionManager;
 public class Configuration {
     /*
         String Initialization
-     */
-    public static final String FRONT_LEFT_MOTOR = "dm1";
-    public static final String FRONT_RIGHT_MOTOR = "dm0";
-    public static final String BACK_LEFT_MOTOR = "dm2";
-    public static final String BACK_RIGHT_MOTOR = "dm3";
-    public static final String ARM_LEFT_MOTOR = "";
-    public static final String ARM_RIGHT_MOTOR = "";
-    public static final String LIFT_MOTOR = "um1";
 
-    public static final String FRONT_LEFT_SERVO = "ds0";
-    public static final String FRONT_RIGHT_SERVO = "ds1";
-    public static final String CLIP_SERVO = "ds2"; //0.7 -> 1
-    public static final String TOUCH_SERVO = "";
+        d: DQ2FBDJY where I attach main power and phone
+        u: DQ18A949
+        camera: 59BCFD0
+     */
+    public static final String FRONT_LEFT_MOTOR = "dm1"; // wheel
+    public static final String FRONT_RIGHT_MOTOR = "dm0"; // wheel
+    public static final String BACK_LEFT_MOTOR = "dm2"; // wheel
+    public static final String BACK_RIGHT_MOTOR = "dm3"; // wheel
+    public static final String ARM_LEFT_MOTOR = "um2"; // left compliant wheel
+    public static final String ARM_RIGHT_MOTOR = "um3"; // right compliant wheel
+    public static final String LIFT_MOTOR = "um1"; // lift
+
+    public static final String FRONT_LEFT_SERVO = "ds0"; // the servo: left foundation // tested
+    public static final String FRONT_RIGHT_SERVO = "ds1"; // the servo: right foundation // tested
+    public static final String CLIP_SERVO = "ds3"; // servo to grab skystone from outside // tested
+    public static final String TOUCH_SERVO = "ds2"; // servo to grab skystone // tested
+    public static final String TURNING_SERVO = "ds4"; // servo to turn skystone // tested
+    public static final String PUSH_SERVO = "ds5"; // servo to push block in // tested
 
     public static final String LEFT_DISTANCE_SENSOR = "";
     public static final String RIGHT_DISTANCE_SENSOR = "";
@@ -61,7 +67,7 @@ public class Configuration {
     public static final boolean flashLight = false;
     public static final Integer TETRIX_TICKS_PER_REV = 1440;
     public static final Integer ANDYMARK_TICKS_PER_REV = 1120;
-    public static final float ABSOLUTE_SPEED = 1.0f;
+    public static final float ABSOLUTE_SPEED = 0.8f;
 
     /*
         Variables
@@ -71,6 +77,20 @@ public class Configuration {
     public static VisionManager visionManager;
     public static GamepadManager gamepadManager;
     public static String debugMessage = "";
+
+    /*
+        Gamepad variables that needs to be tracked
+     */
+    public static int spinArmLeftMotor = 0;
+    public static int spinArmRightMotor = 0;
+    public static boolean yPressedGamepad1 = false;
+    public static boolean aPressedGamepad1 = false;
+    public static boolean xPressedGamepad1 = false;
+    public static boolean bPressedGamepad1 = false;
+    public static boolean upPressedGamepad1 = false;
+    public static boolean downPressedGamepad1 = false;
+    public static boolean leftPressedGamepad1 = false;
+    public static boolean rightPressedGamepad1 = false;
 
     public static void init() {
         team = null;
@@ -87,6 +107,13 @@ public class Configuration {
         visionManager = null;
         gamepadManager = null;
         debugMessage = null;
+
+        spinArmLeftMotor = 0;
+        spinArmRightMotor = 0;
+        yPressedGamepad1 = false;
+        aPressedGamepad1 = false;
+        xPressedGamepad1 = false;
+        bPressedGamepad1 = false;
     }
 
     public static String getFileName() {

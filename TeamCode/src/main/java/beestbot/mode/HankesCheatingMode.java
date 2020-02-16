@@ -120,24 +120,187 @@ public class HankesCheatingMode extends BeestAbsurdMode {
     @Override
     public void sub_start() {
         try { // TODO: CAREFUL The stack will execute backward
-            switch (Configuration.signal) {
+            switch (Configuration.signal) { // prepare
                 case SKYSTONE_AT_SIX:
-                    Configuration.tasks.push(new Task(1.5, null, Task.getMethod("turnLeft"), Task.getMethod("stop"), telemetry)); // 90 degree
+                    // grab
+                    Configuration.tasks.push(new Task(0.4, null, Task.getMethod("moveBack"), Task.getMethod("stop"), telemetry)); // move foundation
+                    Configuration.tasks.push(new Task(0.1, null, Task.getMethod("grabFoundation"), Task.getMethod("stop"), telemetry)); // grab
+
+                    // left and push
+                    Configuration.tasks.push(new Task(1, null, Task.getMethod("moveFront"), Task.getMethod("stop"), telemetry)); // go to foundation
+                    Configuration.tasks.push(new Task(0.05, null, Task.getMethod("turnRight"), Task.getMethod("stop"), telemetry)); // 90 back
+                    Configuration.tasks.push(new Task(1.5, null, Task.getMethod("turnLeft"), Task.getMethod("stop"), telemetry)); // left 90 degree
+                    // to foundation // should be 8
+                    Configuration.tasks.push(new Task(8, null, Task.getMethod("moveFront"), Task.getMethod("stop"), telemetry)); // go to foundation
+
+                    // go back
+                    Configuration.tasks.push(new Task(1.5, null, Task.getMethod("moveRight"), Task.getMethod("stop"), telemetry)); // move back little bit
+
+                    // grab block
+                    Configuration.tasks.push(new Task(1, null, Task.getMethod("grabBlock"), Task.getMethod("stop"), telemetry)); // grabBlock
+
+                    // go to correct position
+                    Configuration.tasks.push(new Task(0.35*0 + 0.20, null, Task.getMethod("moveFront"), Task.getMethod("stop"), telemetry)); // grabBlock
+
+                    // go to skystones
+                    Configuration.tasks.push(new Task(0.05, null, Task.getMethod("turnLeft"), Task.getMethod("stop"), telemetry)); // 90 back
+                    Configuration.tasks.push(new Task(1.4, null, Task.getMethod("turnRight"), Task.getMethod("stop"), telemetry)); // right 90 degree
+                    Configuration.tasks.push(new Task(0.1, null, Task.getMethod("moveBack"), Task.getMethod("stop"), telemetry)); // go to skystone back
+                    Configuration.tasks.push(new Task(2.2, null, Task.getMethod("moveFront"), Task.getMethod("stop"), telemetry)); // go to skystone
+                    Configuration.tasks.push(new Task(0.05, null, Task.getMethod("turnRight"), Task.getMethod("stop"), telemetry)); // 90 back
+                    Configuration.tasks.push(new Task(1.5, null, Task.getMethod("turnLeft"), Task.getMethod("stop"), telemetry)); // left 90 degree
+                    Configuration.tasks.push(new Task(0.1, null, Task.getMethod("moveLeft"), Task.getMethod("stop"), telemetry)); // just get out
                     break;
                 case SKYSTONE_AT_FIVE:
-                    Configuration.tasks.push(new Task(1.6, null, Task.getMethod("turnRight"), Task.getMethod("stop"), telemetry)); // 90 degree
+                    // grab
+                    Configuration.tasks.push(new Task(0.4, null, Task.getMethod("moveBack"), Task.getMethod("stop"), telemetry)); // move foundation
+                    Configuration.tasks.push(new Task(0.1, null, Task.getMethod("grabFoundation"), Task.getMethod("stop"), telemetry)); // grab
+
+                    // left and push
+                    Configuration.tasks.push(new Task(1, null, Task.getMethod("moveFront"), Task.getMethod("stop"), telemetry)); // go to foundation
+                    Configuration.tasks.push(new Task(0.05, null, Task.getMethod("turnRight"), Task.getMethod("stop"), telemetry)); // 90 back
+                    Configuration.tasks.push(new Task(1.5, null, Task.getMethod("turnLeft"), Task.getMethod("stop"), telemetry)); // left 90 degree
+                    // to foundation // should be 8
+                    Configuration.tasks.push(new Task(8, null, Task.getMethod("moveFront"), Task.getMethod("stop"), telemetry)); // go to foundation
+
+                    // go back
+                    Configuration.tasks.push(new Task(1.5, null, Task.getMethod("moveRight"), Task.getMethod("stop"), telemetry)); // move back little bit
+
+                    // grab block
+                    Configuration.tasks.push(new Task(1, null, Task.getMethod("grabBlock"), Task.getMethod("stop"), telemetry)); // grabBlock
+
+                    // go to correct position
+                    Configuration.tasks.push(new Task(0.35*1 + 0.20, null, Task.getMethod("moveFront"), Task.getMethod("stop"), telemetry)); // grabBlock
+
+                    // go to skystones
+                    Configuration.tasks.push(new Task(0.05, null, Task.getMethod("turnLeft"), Task.getMethod("stop"), telemetry)); // 90 back
+                    Configuration.tasks.push(new Task(1.4, null, Task.getMethod("turnRight"), Task.getMethod("stop"), telemetry)); // right 90 degree
+                    Configuration.tasks.push(new Task(0.1, null, Task.getMethod("moveBack"), Task.getMethod("stop"), telemetry)); // go to skystone back
+                    Configuration.tasks.push(new Task(2.2, null, Task.getMethod("moveFront"), Task.getMethod("stop"), telemetry)); // go to skystone
+                    Configuration.tasks.push(new Task(0.05, null, Task.getMethod("turnRight"), Task.getMethod("stop"), telemetry)); // 90 back
+                    Configuration.tasks.push(new Task(1.5, null, Task.getMethod("turnLeft"), Task.getMethod("stop"), telemetry)); // left 90 degree
+                    Configuration.tasks.push(new Task(0.1, null, Task.getMethod("moveLeft"), Task.getMethod("stop"), telemetry)); // just get out
                     break;
                 case SKYSTONE_AT_FOUR:
-                    Configuration.tasks.push(new Task(2, null, Task.getMethod("moveFront"), Task.getMethod("stop"), telemetry));
+                    // grab
+                    Configuration.tasks.push(new Task(0.4, null, Task.getMethod("moveBack"), Task.getMethod("stop"), telemetry)); // move foundation
+                    Configuration.tasks.push(new Task(0.1, null, Task.getMethod("grabFoundation"), Task.getMethod("stop"), telemetry)); // grab
+
+                    // left and push
+                    Configuration.tasks.push(new Task(1, null, Task.getMethod("moveFront"), Task.getMethod("stop"), telemetry)); // go to foundation
+                    Configuration.tasks.push(new Task(0.05, null, Task.getMethod("turnRight"), Task.getMethod("stop"), telemetry)); // 90 back
+                    Configuration.tasks.push(new Task(1.5, null, Task.getMethod("turnLeft"), Task.getMethod("stop"), telemetry)); // left 90 degree
+                    // to foundation // should be 8
+                    Configuration.tasks.push(new Task(8, null, Task.getMethod("moveFront"), Task.getMethod("stop"), telemetry)); // go to foundation
+
+                    // go back
+                    Configuration.tasks.push(new Task(1.5, null, Task.getMethod("moveRight"), Task.getMethod("stop"), telemetry)); // move back little bit
+
+                    // grab block
+                    Configuration.tasks.push(new Task(1, null, Task.getMethod("grabBlock"), Task.getMethod("stop"), telemetry)); // grabBlock
+
+                    // go to correct position
+                    Configuration.tasks.push(new Task(0.35*0 + 0.20, null, Task.getMethod("moveBack"), Task.getMethod("stop"), telemetry)); // grabBlock
+
+                    // go to skystones
+                    Configuration.tasks.push(new Task(0.05, null, Task.getMethod("turnLeft"), Task.getMethod("stop"), telemetry)); // 90 back
+                    Configuration.tasks.push(new Task(1.4, null, Task.getMethod("turnRight"), Task.getMethod("stop"), telemetry)); // right 90 degree
+                    Configuration.tasks.push(new Task(0.1, null, Task.getMethod("moveBack"), Task.getMethod("stop"), telemetry)); // go to skystone back
+                    Configuration.tasks.push(new Task(2.2, null, Task.getMethod("moveFront"), Task.getMethod("stop"), telemetry)); // go to skystone
+                    Configuration.tasks.push(new Task(0.05, null, Task.getMethod("turnRight"), Task.getMethod("stop"), telemetry)); // 90 back
+                    Configuration.tasks.push(new Task(1.5, null, Task.getMethod("turnLeft"), Task.getMethod("stop"), telemetry)); // left 90 degree
+                    Configuration.tasks.push(new Task(0.1, null, Task.getMethod("moveLeft"), Task.getMethod("stop"), telemetry)); // just get out
                     break;
-                case SKYSTONE_AT_THREE:
-                    Configuration.tasks.push(new Task(1, null, Task.getMethod("moveFront"), Task.getMethod("stop"), telemetry));
+                case SKYSTONE_AT_THREE: // tested
+                    // grab
+                    Configuration.tasks.push(new Task(0.4, null, Task.getMethod("moveBack"), Task.getMethod("stop"), telemetry)); // move foundation
+                    Configuration.tasks.push(new Task(0.1, null, Task.getMethod("grabFoundation"), Task.getMethod("stop"), telemetry)); // grab
+
+                    // left and push
+                    Configuration.tasks.push(new Task(1, null, Task.getMethod("moveFront"), Task.getMethod("stop"), telemetry)); // go to foundation
+                    Configuration.tasks.push(new Task(0.05, null, Task.getMethod("turnRight"), Task.getMethod("stop"), telemetry)); // 90 back
+                    Configuration.tasks.push(new Task(1.5, null, Task.getMethod("turnLeft"), Task.getMethod("stop"), telemetry)); // left 90 degree
+                    // to foundation // should be 8
+                    Configuration.tasks.push(new Task(8, null, Task.getMethod("moveFront"), Task.getMethod("stop"), telemetry)); // go to foundation
+
+                    // go back
+                    Configuration.tasks.push(new Task(1.5, null, Task.getMethod("moveRight"), Task.getMethod("stop"), telemetry)); // move back little bit
+
+                    // grab block
+                    Configuration.tasks.push(new Task(1, null, Task.getMethod("grabBlock"), Task.getMethod("stop"), telemetry)); // grabBlock
+
+                    // go to correct position
+                    Configuration.tasks.push(new Task(0.35*1 + 0.20, null, Task.getMethod("moveBack"), Task.getMethod("stop"), telemetry)); // grabBlock
+
+                    // go to skystones
+                    Configuration.tasks.push(new Task(0.05, null, Task.getMethod("turnLeft"), Task.getMethod("stop"), telemetry)); // 90 back
+                    Configuration.tasks.push(new Task(1.4, null, Task.getMethod("turnRight"), Task.getMethod("stop"), telemetry)); // right 90 degree
+                    Configuration.tasks.push(new Task(0.1, null, Task.getMethod("moveBack"), Task.getMethod("stop"), telemetry)); // go to skystone back
+                    Configuration.tasks.push(new Task(2.2, null, Task.getMethod("moveFront"), Task.getMethod("stop"), telemetry)); // go to skystone
+                    Configuration.tasks.push(new Task(0.05, null, Task.getMethod("turnRight"), Task.getMethod("stop"), telemetry)); // 90 back
+                    Configuration.tasks.push(new Task(1.5, null, Task.getMethod("turnLeft"), Task.getMethod("stop"), telemetry)); // left 90 degree
+                    Configuration.tasks.push(new Task(0.1, null, Task.getMethod("moveLeft"), Task.getMethod("stop"), telemetry)); // just get out
+//                    Configuration.tasks.push(new Task(2, null, Task.getMethod("moveFront"), Task.getMethod("stop"), telemetry)); // 24 inches
                     break;
-                case SKYSTONE_AT_TWO:
-                    Configuration.tasks.push(new Task(2.5, null, Task.getMethod("moveFront"), Task.getMethod("stop"), telemetry));
+                case SKYSTONE_AT_TWO: // tested
+                    // grab
+                    Configuration.tasks.push(new Task(0.4, null, Task.getMethod("moveBack"), Task.getMethod("stop"), telemetry)); // move foundation
+                    Configuration.tasks.push(new Task(0.1, null, Task.getMethod("grabFoundation"), Task.getMethod("stop"), telemetry)); // grab
+
+                    // left and push
+                    Configuration.tasks.push(new Task(1, null, Task.getMethod("moveFront"), Task.getMethod("stop"), telemetry)); // go to foundation
+                    Configuration.tasks.push(new Task(0.05, null, Task.getMethod("turnRight"), Task.getMethod("stop"), telemetry)); // 90 back
+                    Configuration.tasks.push(new Task(1.5, null, Task.getMethod("turnLeft"), Task.getMethod("stop"), telemetry)); // left 90 degree
+                    // to foundation // should be 8
+                    Configuration.tasks.push(new Task(8, null, Task.getMethod("moveFront"), Task.getMethod("stop"), telemetry)); // go to foundation
+
+                    // go back
+                    Configuration.tasks.push(new Task(1.5, null, Task.getMethod("moveRight"), Task.getMethod("stop"), telemetry)); // move back little bit
+
+                    // grab block
+                    Configuration.tasks.push(new Task(1, null, Task.getMethod("grabBlock"), Task.getMethod("stop"), telemetry)); // grabBlock
+
+                    // go to correct position
+                    Configuration.tasks.push(new Task(0.35*2 + 0.20, null, Task.getMethod("moveBack"), Task.getMethod("stop"), telemetry)); // grabBlock
+
+                    // go to skystones
+                    Configuration.tasks.push(new Task(0.05, null, Task.getMethod("turnLeft"), Task.getMethod("stop"), telemetry)); // 90 back
+                    Configuration.tasks.push(new Task(1.4, null, Task.getMethod("turnRight"), Task.getMethod("stop"), telemetry)); // right 90 degree
+                    Configuration.tasks.push(new Task(0.1, null, Task.getMethod("moveBack"), Task.getMethod("stop"), telemetry)); // go to skystone back
+                    Configuration.tasks.push(new Task(2.2, null, Task.getMethod("moveFront"), Task.getMethod("stop"), telemetry)); // go to skystone
+                    Configuration.tasks.push(new Task(0.05, null, Task.getMethod("turnRight"), Task.getMethod("stop"), telemetry)); // 90 back
+                    Configuration.tasks.push(new Task(1.5, null, Task.getMethod("turnLeft"), Task.getMethod("stop"), telemetry)); // left 90 degree
+                    Configuration.tasks.push(new Task(0.1, null, Task.getMethod("moveLeft"), Task.getMethod("stop"), telemetry)); // just get out
                     break;
-                case SKYSTONE_AT_ONE:
-                    Configuration.tasks.push(new Task(1.5, null, Task.getMethod("moveFront"), Task.getMethod("stop"), telemetry));
+                case SKYSTONE_AT_ONE: // testing
+                    // grab
+                    Configuration.tasks.push(new Task(0.4, null, Task.getMethod("moveBack"), Task.getMethod("stop"), telemetry)); // move foundation
+                    Configuration.tasks.push(new Task(0.1, null, Task.getMethod("grabFoundation"), Task.getMethod("stop"), telemetry)); // grab
+
+                    // left and push
+                    Configuration.tasks.push(new Task(1, null, Task.getMethod("moveFront"), Task.getMethod("stop"), telemetry)); // go to foundation
+                    Configuration.tasks.push(new Task(0.05, null, Task.getMethod("turnRight"), Task.getMethod("stop"), telemetry)); // 90 back
+                    Configuration.tasks.push(new Task(1.5, null, Task.getMethod("turnLeft"), Task.getMethod("stop"), telemetry)); // left 90 degree
+                    // to foundation // should be 8
+                    Configuration.tasks.push(new Task(8, null, Task.getMethod("moveFront"), Task.getMethod("stop"), telemetry)); // go to foundation
+
+                    // go back
+                    Configuration.tasks.push(new Task(1.5, null, Task.getMethod("moveRight"), Task.getMethod("stop"), telemetry)); // move back little bit
+
+                    // grab block
+                    Configuration.tasks.push(new Task(1, null, Task.getMethod("grabBlock"), Task.getMethod("stop"), telemetry)); // grabBlock
+
+                    // go to correct position
+                    Configuration.tasks.push(new Task(0.35*3 + 0.20, null, Task.getMethod("moveBack"), Task.getMethod("stop"), telemetry)); // grabBlock
+
+                    // go to skystones
+                    Configuration.tasks.push(new Task(0.05, null, Task.getMethod("turnLeft"), Task.getMethod("stop"), telemetry)); // 90 back
+                    Configuration.tasks.push(new Task(1.4, null, Task.getMethod("turnRight"), Task.getMethod("stop"), telemetry)); // right 90 degree
+                    Configuration.tasks.push(new Task(0.1, null, Task.getMethod("moveBack"), Task.getMethod("stop"), telemetry)); // go to skystone back
+                    Configuration.tasks.push(new Task(2.2, null, Task.getMethod("moveFront"), Task.getMethod("stop"), telemetry)); // go to skystone
+                    Configuration.tasks.push(new Task(0.05, null, Task.getMethod("turnRight"), Task.getMethod("stop"), telemetry)); // 90 back
+                    Configuration.tasks.push(new Task(1.5, null, Task.getMethod("turnLeft"), Task.getMethod("stop"), telemetry)); // left 90 degree
+                    Configuration.tasks.push(new Task(0.1, null, Task.getMethod("moveLeft"), Task.getMethod("stop"), telemetry)); // just get out
                 case UNKNOWN:
                     break;
                 case NOTHING:

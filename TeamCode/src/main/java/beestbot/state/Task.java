@@ -85,31 +85,33 @@ public class Task {
     // getMethod(methodName, inputParameter)
     // TODO: IMPORTANT, you should not expect the user to input any arguments here
     public static Method getMethod(String name) throws NoSuchMethodException {
-        switch (name) {
-            case "stop":
-                return Task.class.getMethod(name);
-            case "doNothing":
-                return Task.class.getMethod(name);
-            case "goToSkyStone":
-                return Task.class.getMethod(name);
-            case "grabBlock":
-                return Task.class.getMethod(name);
-            case "dropBlock":
-                return Task.class.getMethod(name);
-            case "turnLeft":
-                return Task.class.getMethod(name);
-            case "turnRight":
-                return Task.class.getMethod(name);
-            case "moveLeft":
-                return Task.class.getMethod(name);
-            case "moveRight":
-                return Task.class.getMethod(name);
-            case "moveFront":
-                return Task.class.getMethod(name);
-            case "moveBack":
-                return Task.class.getMethod(name);
-        }
-        throw new NoSuchMethodException("The method name '" + name + "' does not exist.");
+        return Task.class.getMethod(name);
+//        switch (name) {
+//            case "stop":
+//                return Task.class.getMethod(name);
+//            case "doNothing":
+//                return Task.class.getMethod(name);
+//            case "goToSkyStone":
+//                return Task.class.getMethod(name);
+//            case "grabBlock":
+//                return Task.class.getMethod(name);
+//            case "dropBlock":
+//                return Task.class.getMethod(name);
+//            case "turnLeft":
+//                return Task.class.getMethod(name);
+//            case "turnRight":
+//                return Task.class.getMethod(name);
+//            case "moveLeft":
+//                return Task.class.getMethod(name);
+//            case "moveRight":
+//                return Task.class.getMethod(name);
+//            case "moveFront":
+//                return Task.class.getMethod(name);
+//            case "moveBack":
+//                return Task.class.getMethod(name);
+//            default:
+//                return Task.class.getMethod(name);
+//        }
     }
 
     /*
@@ -207,29 +209,29 @@ public class Task {
 
     }
     public void moveLeft() {
-        Configuration.gamepadManager.forceFrontLeftMotor = Range.clip(0.3 , -1f, 1f);
-        Configuration.gamepadManager.forceFrontRightMotor = -Range.clip(0.3, -1f, 1f);
-        Configuration.gamepadManager.forceBackLeftMotor = Range.clip(-0.3, -1f, 1f);
-        Configuration.gamepadManager.forceBackRightMotor = -Range.clip(-0.3, -1f, 1f);
+        Configuration.gamepadManager.forceFrontLeftMotor = Range.clip(0.4 , -1f, 1f);
+        Configuration.gamepadManager.forceFrontRightMotor = Range.clip(0.4, -1f, 1f);
+        Configuration.gamepadManager.forceBackLeftMotor = Range.clip(-0.4, -1f, 1f);
+        Configuration.gamepadManager.forceBackRightMotor = Range.clip(-0.4, -1f, 1f);
     }
     public void moveRight() {
-        Configuration.gamepadManager.forceFrontLeftMotor = Range.clip(-0.3 , -1f, 1f);
-        Configuration.gamepadManager.forceFrontRightMotor = -Range.clip(-0.3, -1f, 1f);
-        Configuration.gamepadManager.forceBackLeftMotor = Range.clip(0.3, -1f, 1f);
-        Configuration.gamepadManager.forceBackRightMotor = -Range.clip(0.3, -1f, 1f);
+        Configuration.gamepadManager.forceFrontLeftMotor = Range.clip(-0.4 , -1f, 1f);
+        Configuration.gamepadManager.forceFrontRightMotor = Range.clip(-0.4, -1f, 1f);
+        Configuration.gamepadManager.forceBackLeftMotor = Range.clip(0.4, -1f, 1f);
+        Configuration.gamepadManager.forceBackRightMotor = Range.clip(0.4, -1f, 1f);
 
     }
     public void moveFront() {
         Configuration.gamepadManager.forceFrontLeftMotor = Range.clip(-0.3 , -1f, 1f);
-        Configuration.gamepadManager.forceFrontRightMotor = -Range.clip(0.3, -1f, 1f);
+        Configuration.gamepadManager.forceFrontRightMotor = -Range.clip(-0.3, -1f, 1f);
         Configuration.gamepadManager.forceBackLeftMotor = Range.clip(-0.3, -1f, 1f);
-        Configuration.gamepadManager.forceBackRightMotor = -Range.clip(0.3, -1f, 1f);
+        Configuration.gamepadManager.forceBackRightMotor = -Range.clip(-0.3, -1f, 1f);
     }
     public void moveBack() {
         Configuration.gamepadManager.forceFrontLeftMotor = Range.clip(0.3 , -1f, 1f);
-        Configuration.gamepadManager.forceFrontRightMotor = -Range.clip(-0.3, -1f, 1f);
-        Configuration.gamepadManager.forceBackLeftMotor = Range.clip(0.3, -1f, 1f);
-        Configuration.gamepadManager.forceBackRightMotor = -Range.clip(-0.3, -1f, 1f);
+        Configuration.gamepadManager.forceFrontRightMotor = -Range.clip(0.3, -1f, 1f);
+        Configuration.gamepadManager.forceBackLeftMotor = Range.clip( 0.3, -1f, 1f);
+        Configuration.gamepadManager.forceBackRightMotor = -Range.clip(0.3, -1f, 1f);
 
     }
     public void grabFoundation() {

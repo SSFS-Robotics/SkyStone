@@ -92,6 +92,11 @@ public class Configuration {
     public static boolean leftPressedGamepad1 = false;
     public static boolean rightPressedGamepad1 = false;
 
+    public static boolean backPressedGamepad1 = false;
+    public static boolean backPressedGamepad2 = false;
+    public static boolean inverseGamepad1 = false;
+    public static boolean inverseGamepad2 = false;
+
     public static void init() {
         team = null;
         inverse = Inverse.X_AXIS;

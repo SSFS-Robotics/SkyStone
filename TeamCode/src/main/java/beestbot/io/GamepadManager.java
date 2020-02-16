@@ -98,10 +98,29 @@ public class GamepadManager implements Serializable, Cloneable {
          */
 
             // when first gamepad is not controlling movement, second gamepad will take over
-            float LF_1 = (gp2.left_stick_y - -gp2.left_stick_x - -gp2.right_stick_x)*1.0f + (gp1.left_stick_y - -gp1.left_stick_x - 0)*0.4f;
-            float RF_1 = (gp2.left_stick_y + -gp2.left_stick_x + -gp2.right_stick_x)*1.0f + (gp1.left_stick_y + -gp1.left_stick_x + 0)*0.4f;
-            float LB_1 = (gp2.left_stick_y + -gp2.left_stick_x - -gp2.right_stick_x)*1.0f + (gp1.left_stick_y + -gp1.left_stick_x - 0)*0.4f;
-            float RB_1 = (gp2.left_stick_y - -gp2.left_stick_x + -gp2.right_stick_x)*1.0f + (gp1.left_stick_y - -gp1.left_stick_x + 0)*0.4f;
+            float LF_1 = (gp2.left_stick_y - -gp2.left_stick_x - -gp2.right_stick_x)*1.0f;
+            float RF_1 = (gp2.left_stick_y + -gp2.left_stick_x + -gp2.right_stick_x)*1.0f;
+            float LB_1 = (gp2.left_stick_y + -gp2.left_stick_x - -gp2.right_stick_x)*1.0f;
+            float RB_1 = (gp2.left_stick_y - -gp2.left_stick_x + -gp2.right_stick_x)*1.0f;
+
+            if (gp2.back && !Configuration.backPressedGamepad1) {
+                Configuration.backPressedGamepad1 = true;
+                Configuration.inverseGamepad1 = !Configuration.inverseGamepad1;
+            } else if (!gp2.back && Configuration.backPressedGamepad1) {
+                Configuration.backPressedGamepad1 = false;
+            }
+            if (Configuration.inverseGamepad1) {
+                LF_1 = -LF_1;
+                RF_1 = -RF_1;
+                LB_1 = -LB_1;
+                RB_1 = -RB_1;
+            }
+
+            LF_1 += (gp1.left_stick_y - -gp1.left_stick_x - 0)*0.4f;
+            RF_1 += (gp1.left_stick_y + -gp1.left_stick_x + 0)*0.4f;
+            LB_1 += (gp1.left_stick_y + -gp1.left_stick_x - 0)*0.4f;
+            RB_1 += (gp1.left_stick_y - -gp1.left_stick_x + 0)*0.4f;
+
             Float[] decMax_1 = new Float[]{Math.abs(LF_1), Math.abs(RF_1), Math.abs(LB_1), Math.abs(RB_1)};
             List<Float> a_1 = new ArrayList<>(Arrays.asList(decMax_1));
             float max_1 = Range.clip(Collections.max(a_1), 1f, Float.MAX_VALUE);
@@ -225,10 +244,29 @@ public class GamepadManager implements Serializable, Cloneable {
          */
 
         // when first gamepad is not controlling movement, second gamepad will take over
-        float LF_1 = (gp2.left_stick_y - gp2.left_stick_x - gp2.right_stick_x)*1.0f + (gp1.left_stick_y - gp1.left_stick_x - 0)*0.4f;
-        float RF_1 = (gp2.left_stick_y + gp2.left_stick_x + gp2.right_stick_x)*1.0f + (gp1.left_stick_y + gp1.left_stick_x + 0)*0.4f;
-        float LB_1 = (gp2.left_stick_y + gp2.left_stick_x - gp2.right_stick_x)*1.0f + (gp1.left_stick_y + gp1.left_stick_x - 0)*0.4f;
-        float RB_1 = (gp2.left_stick_y - gp2.left_stick_x + gp2.right_stick_x)*1.0f + (gp1.left_stick_y - gp1.left_stick_x + 0)*0.4f;
+        float LF_1 = (gp2.left_stick_y - gp2.left_stick_x - gp2.right_stick_x)*1.0f;
+        float RF_1 = (gp2.left_stick_y + gp2.left_stick_x + gp2.right_stick_x)*1.0f;
+        float LB_1 = (gp2.left_stick_y + gp2.left_stick_x - gp2.right_stick_x)*1.0f;
+        float RB_1 = (gp2.left_stick_y - gp2.left_stick_x + gp2.right_stick_x)*1.0f;
+
+        if (gp2.back && !Configuration.backPressedGamepad1) {
+            Configuration.backPressedGamepad1 = true;
+            Configuration.inverseGamepad1 = !Configuration.inverseGamepad1;
+        } else if (!gp2.back && Configuration.backPressedGamepad1) {
+            Configuration.backPressedGamepad1 = false;
+        }
+        if (Configuration.inverseGamepad1) {
+            LF_1 = -LF_1;
+            RF_1 = -RF_1;
+            LB_1 = -LB_1;
+            RB_1 = -RB_1;
+        }
+
+        LF_1 += (gp1.left_stick_y - gp1.left_stick_x - 0)*0.4f;
+        RF_1 += (gp1.left_stick_y + gp1.left_stick_x + 0)*0.4f;
+        LB_1 += (gp1.left_stick_y + gp1.left_stick_x - 0)*0.4f;
+        RB_1 += (gp1.left_stick_y - gp1.left_stick_x + 0)*0.4f;
+
         Float[] decMax_1 = new Float[]{Math.abs(LF_1), Math.abs(RF_1), Math.abs(LB_1), Math.abs(RB_1)};
         List<Float> a_1 = new ArrayList<>(Arrays.asList(decMax_1));
         float max_1 = Range.clip(Collections.max(a_1), 1f, Float.MAX_VALUE);

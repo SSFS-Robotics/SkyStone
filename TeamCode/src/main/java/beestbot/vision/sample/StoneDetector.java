@@ -113,7 +113,6 @@ public class StoneDetector extends DogeCVDetector {
         switch (stageToRenderToViewport) {
             case THRESHOLD: {
                 Imgproc.cvtColor(yellowMask, yellowMask, Imgproc.COLOR_GRAY2BGR);
-
                 return yellowMask;
             }
             case RAW_IMAGE: {

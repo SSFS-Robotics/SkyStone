@@ -83,7 +83,7 @@ import static org.firstinspires.ftc.robotcore.external.navigation.VuforiaLocaliz
  */
 
 
-@TeleOp(name="Skystone Marker Tracking", group ="Concept")
+@TeleOp(name="Vuforia Marker Tracking", group ="Concept")
 /* EXAMPLE CODE FOR RECOGNIZING IMAGES USING VUFORIA*/
 public class SkystoneIdentificationSample extends LinearOpMode {
 

@@ -139,7 +139,7 @@ public class Task {
             // -y > 0 then move front
             // -x > 0 then move right
             float front = -(y) /100;
-            float right = -(x+200) /100;
+            float right = -(x+200) /100; // 200 is the distance between the block and robot
 
             float LF_1 = (front - -right - 0)*0.4f;
             float RF_1 = (front + -right + 0)*0.4f;
@@ -153,14 +153,14 @@ public class Task {
             LB_1 = (LB_1 / max_1) * Configuration.ABSOLUTE_SPEED * 0.6f;
             RB_1 = (RB_1 / max_1) * Configuration.ABSOLUTE_SPEED * 0.6f;
 
-            Configuration.gamepadManager.forceFrontLeftMotor = Range.clip(LF_1, -1f, 1f);
-            Configuration.gamepadManager.forceFrontRightMotor = -Range.clip(RF_1, -1f, 1f);
-            Configuration.gamepadManager.forceBackLeftMotor = Range.clip(LB_1, -1f, 1f);
-            Configuration.gamepadManager.forceBackRightMotor = -Range.clip(RB_1, -1f, 1f);
+            Configuration.gamepadManager.forceFrontLeftMotor = Range.clip(Math.min(LF_1, 0.2), -1f, 1f);
+            Configuration.gamepadManager.forceFrontRightMotor = -Range.clip(Math.min(RF_1, 0.2), -1f, 1f);
+            Configuration.gamepadManager.forceBackLeftMotor = Range.clip(Math.min(LB_1, 0.2), -1f, 1f);
+            Configuration.gamepadManager.forceBackRightMotor = -Range.clip(Math.min(RB_1, 0.2), -1f, 1f);
 
             telemetry.addData("TASK", "x = " + x + "; front = " + front);
             telemetry.addData("TASK", "y = " + y + "; right = " + right);
-            if (Math.abs(front) < 0.01 && Math.abs(right) < 0.01) {
+            if (Math.abs(front) < 0.4 && Math.abs(right) < 0.4) {
                 Configuration.gamepadManager.forceFrontLeftMotor = 0;
                 Configuration.gamepadManager.forceFrontRightMotor = 0;
                 Configuration.gamepadManager.forceBackLeftMotor = 0;
@@ -188,55 +188,57 @@ public class Task {
 
     }
     public void grabBlock() {
-        Configuration.gamepadManager.forceTouchServo = 1;
+        Configuration.gamepadManager.forceClipServo = 0.5f;
     }
     public void dropBlock() {
-        Configuration.gamepadManager.forceTouchServo = -1;
+        Configuration.gamepadManager.forceClipServo = 0f;
     }
     public void turnLeft() {
-        Configuration.gamepadManager.forceFrontLeftMotor = Range.clip(+0.2 , -1f, 1f);
-        Configuration.gamepadManager.forceFrontRightMotor = -Range.clip(-0.2, -1f, 1f);
-        Configuration.gamepadManager.forceBackLeftMotor = Range.clip(+0.2, -1f, 1f);
-        Configuration.gamepadManager.forceBackRightMotor = -Range.clip(-0.2, -1f, 1f);
+        Configuration.gamepadManager.forceFrontLeftMotor = Range.clip(+0.3 , -1f, 1f);
+        Configuration.gamepadManager.forceFrontRightMotor = -Range.clip(-0.3, -1f, 1f);
+        Configuration.gamepadManager.forceBackLeftMotor = Range.clip(+0.3, -1f, 1f);
+        Configuration.gamepadManager.forceBackRightMotor = -Range.clip(-0.3, -1f, 1f);
     }
     public void turnRight() {
-        Configuration.gamepadManager.forceFrontLeftMotor = Range.clip(-0.2 , -1f, 1f);
-        Configuration.gamepadManager.forceFrontRightMotor = -Range.clip(+0.2, -1f, 1f);
-        Configuration.gamepadManager.forceBackLeftMotor = Range.clip(-0.2, -1f, 1f);
-        Configuration.gamepadManager.forceBackRightMotor = -Range.clip(+0.2, -1f, 1f);
+        Configuration.gamepadManager.forceFrontLeftMotor = Range.clip(-0.3 , -1f, 1f);
+        Configuration.gamepadManager.forceFrontRightMotor = -Range.clip(+0.3, -1f, 1f);
+        Configuration.gamepadManager.forceBackLeftMotor = Range.clip(-0.3, -1f, 1f);
+        Configuration.gamepadManager.forceBackRightMotor = -Range.clip(+0.3, -1f, 1f);
 
     }
     public void moveLeft() {
-        Configuration.gamepadManager.forceFrontLeftMotor = Range.clip(0.2 , -1f, 1f);
-        Configuration.gamepadManager.forceFrontRightMotor = -Range.clip(0.2, -1f, 1f);
-        Configuration.gamepadManager.forceBackLeftMotor = Range.clip(-0.2, -1f, 1f);
-        Configuration.gamepadManager.forceBackRightMotor = -Range.clip(-0.2, -1f, 1f);
+        Configuration.gamepadManager.forceFrontLeftMotor = Range.clip(0.3 , -1f, 1f);
+        Configuration.gamepadManager.forceFrontRightMotor = -Range.clip(0.3, -1f, 1f);
+        Configuration.gamepadManager.forceBackLeftMotor = Range.clip(-0.3, -1f, 1f);
+        Configuration.gamepadManager.forceBackRightMotor = -Range.clip(-0.3, -1f, 1f);
     }
     public void moveRight() {
-        Configuration.gamepadManager.forceFrontLeftMotor = Range.clip(-0.2 , -1f, 1f);
-        Configuration.gamepadManager.forceFrontRightMotor = -Range.clip(-0.2, -1f, 1f);
-        Configuration.gamepadManager.forceBackLeftMotor = Range.clip(0.2, -1f, 1f);
-        Configuration.gamepadManager.forceBackRightMotor = -Range.clip(0.2, -1f, 1f);
+        Configuration.gamepadManager.forceFrontLeftMotor = Range.clip(-0.3 , -1f, 1f);
+        Configuration.gamepadManager.forceFrontRightMotor = -Range.clip(-0.3, -1f, 1f);
+        Configuration.gamepadManager.forceBackLeftMotor = Range.clip(0.3, -1f, 1f);
+        Configuration.gamepadManager.forceBackRightMotor = -Range.clip(0.3, -1f, 1f);
 
     }
     public void moveFront() {
-        Configuration.gamepadManager.forceFrontLeftMotor = Range.clip(-0.2 , -1f, 1f);
-        Configuration.gamepadManager.forceFrontRightMotor = -Range.clip(0.2, -1f, 1f);
-        Configuration.gamepadManager.forceBackLeftMotor = Range.clip(-0.2, -1f, 1f);
-        Configuration.gamepadManager.forceBackRightMotor = -Range.clip(0.2, -1f, 1f);
+        Configuration.gamepadManager.forceFrontLeftMotor = Range.clip(-0.3 , -1f, 1f);
+        Configuration.gamepadManager.forceFrontRightMotor = -Range.clip(0.3, -1f, 1f);
+        Configuration.gamepadManager.forceBackLeftMotor = Range.clip(-0.3, -1f, 1f);
+        Configuration.gamepadManager.forceBackRightMotor = -Range.clip(0.3, -1f, 1f);
     }
     public void moveBack() {
-        Configuration.gamepadManager.forceFrontLeftMotor = Range.clip(0.2 , -1f, 1f);
-        Configuration.gamepadManager.forceFrontRightMotor = -Range.clip(-0.2, -1f, 1f);
-        Configuration.gamepadManager.forceBackLeftMotor = Range.clip(0.2, -1f, 1f);
-        Configuration.gamepadManager.forceBackRightMotor = -Range.clip(-0.2, -1f, 1f);
+        Configuration.gamepadManager.forceFrontLeftMotor = Range.clip(0.3 , -1f, 1f);
+        Configuration.gamepadManager.forceFrontRightMotor = -Range.clip(-0.3, -1f, 1f);
+        Configuration.gamepadManager.forceBackLeftMotor = Range.clip(0.3, -1f, 1f);
+        Configuration.gamepadManager.forceBackRightMotor = -Range.clip(-0.3, -1f, 1f);
 
     }
     public void grabFoundation() {
-        // TODO
+        Configuration.gamepadManager.forceFrontLeftServo = 1f;
+        Configuration.gamepadManager.forceFrontRightServo = 0f;
     }
     public void releaseFoundation() {
-        // TODO
+        Configuration.gamepadManager.forceFrontLeftServo = 0.5f;
+        Configuration.gamepadManager.forceFrontRightServo = 0.5f;
     }
 
 }

@@ -20,5 +20,6 @@ repositories {
 }
 dependencies {
     implementation 'org.openftc:opencv-repackaged:4.1.0-A' // for OpenCV-Repackaged
+    implementation 'org.openftc:easyopencv:1.3.2' // for EasyOpenCV
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
 }

@@ -1,11 +1,10 @@
 package beestbot.vision.sample;
 
-import com.disnodeteam.dogecv.detectors.DogeCVDetector;
-import com.disnodeteam.dogecv.detectors.skystone.SkystoneDetector;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
 import org.openftc.easyopencv.OpenCvCamera;
+import org.openftc.easyopencv.OpenCvCameraFactory;
 import org.openftc.easyopencv.OpenCvCameraRotation;
 import org.openftc.easyopencv.OpenCvInternalCamera;
 
@@ -17,10 +16,15 @@ import java.util.Locale;
  * Original Work Copright(c) 2019 OpenFTC Team
  * Derived Work Copyright(c) 2019 DogeDevs
  */
-@TeleOp(name = "DogeCV Stone Detector OpMode", group="DogeCV")
+@TeleOp(name = "DogeCV Stone PhoneCam", group="DogeCV")
 /* EXAMPLE CODE FOR RECOGNIZING SKYSTONE USING DOGECV SKYSTONE DETECTOR*/
 public class StoneDetectorExample extends LinearOpMode {
-    private OpenCvCamera phoneCam;
+    /**
+     * NB: we declare our camera as the {@link OpenCvInternalCamera} type,
+     * as opposed to simply {@link OpenCvCamera}. This allows us to access
+     * the advanced features supported only by the internal camera.
+     */
+    OpenCvInternalCamera phoneCam;
     private StoneDetector stoneDetector;
 
     @Override
@@ -34,10 +38,10 @@ public class StoneDetectorExample extends LinearOpMode {
          * single-parameter constructor instead (commented out below)
          */
         int cameraMonitorViewId = hardwareMap.appContext.getResources().getIdentifier("cameraMonitorViewId", "id", hardwareMap.appContext.getPackageName());
-        phoneCam = new OpenCvInternalCamera(OpenCvInternalCamera.CameraDirection.BACK, cameraMonitorViewId);
+        phoneCam = OpenCvCameraFactory.getInstance().createInternalCamera(OpenCvInternalCamera.CameraDirection.BACK, cameraMonitorViewId);
 
         // OR...  Do Not Activate the Camera Monitor View
-        //phoneCam = new OpenCvInternalCamera(OpenCvInternalCamera.CameraDirection.BACK);
+        //phoneCam = OpenCvCameraFactory.getInstance().createInternalCamera(OpenCvInternalCamera.CameraDirection.BACK);
 
         /*
          * Open the connection to the camera device
@@ -50,7 +54,6 @@ public class StoneDetectorExample extends LinearOpMode {
          * (while a streaming session is in flight) *IS* supported.
          */
         stoneDetector = new StoneDetector();
-
         phoneCam.setPipeline(stoneDetector);
 
         /*

@@ -87,7 +87,7 @@ public class BeestAbsurdMode extends OpMode {
         telemetry.addData("DEBUG", "CONFIG INIT");
         telemetry.update();
 
-        super.msStuckDetectInit = 5000;
+        super.msStuckDetectInit = 50000; // adjusted
         super.msStuckDetectInitLoop = 5000;
         super.msStuckDetectStart = 5000;
         super.msStuckDetectLoop = 5000;
@@ -136,7 +136,6 @@ public class BeestAbsurdMode extends OpMode {
     @Override
     public void init_loop() {
         // debug
-        long lStartTime = System.currentTimeMillis();
 
         // vision manager
         Configuration.visionManager.init_loop();
@@ -145,8 +144,7 @@ public class BeestAbsurdMode extends OpMode {
 
         // TODO
         // debug
-        long timeElapsed = System.currentTimeMillis() - lStartTime;
-        telemetry.addData("DEBUG", "timeElapsed = %d", timeElapsed);
+        telemetry.addData("DEBUG", "timeElapsed = " + String.valueOf(time));
         telemetry.addData("DEBUG", Configuration.debugMessage);
         telemetry.update();
     }

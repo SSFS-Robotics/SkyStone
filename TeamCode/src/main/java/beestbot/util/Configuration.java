@@ -23,8 +23,8 @@ public class Configuration {
         u: DQ18A949
         camera: 59BCFD0
      */
-    public static final String FRONT_LEFT_MOTOR = "dm1"; // wheel
-    public static final String FRONT_RIGHT_MOTOR = "dm0"; // wheel
+    public static final String FRONT_LEFT_MOTOR = "dm0"; // wheel
+    public static final String FRONT_RIGHT_MOTOR = "um0"; // wheel
     public static final String BACK_LEFT_MOTOR = "dm2"; // wheel
     public static final String BACK_RIGHT_MOTOR = "dm3"; // wheel
     public static final String ARM_LEFT_MOTOR = "um2"; // left compliant wheel

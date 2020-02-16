@@ -31,10 +31,7 @@ public class ScriptAbsurdMode extends OpMode {
 
     @Override
     public void init_loop() {
-        long lStartTime = System.currentTimeMillis();
-
-        long timeElapsed = System.currentTimeMillis() - lStartTime;
-        telemetry.addData("Record", "timeElapsed = %d", timeElapsed);
+        telemetry.addData("DEBUG", "timeElapsed = " + String.valueOf(time));
         telemetry.addData("DEBUG", Configuration.debugMessage);
         telemetry.update();
     }

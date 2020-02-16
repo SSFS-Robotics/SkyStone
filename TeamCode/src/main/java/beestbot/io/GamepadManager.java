@@ -72,12 +72,13 @@ public class GamepadManager implements Serializable, Cloneable {
         /*
             For Two Compliant Wheels
          */
-            forceArmLeftMotor = clamp(Configuration.spinArmLeftMotor, 0f, 1f, 0f, 1.0f);
-            forceArmRightMotor = clamp(-Configuration.spinArmRightMotor, 0f, 1f, 0f, 1.0f);
+            forceArmLeftMotor = clamp(Configuration.spinArmLeftMotor*0.5f, -1f, 1f, -1f, 1.0f);
+            forceArmRightMotor = clamp(-Configuration.spinArmRightMotor*0.5f, -1f, 1f, -1f, 1.0f);
 
             forcePushServo = clamp(-0, -1f, 0f, 0.75f, 1f);
-            forceTouchServo = clamp(0, 0f, 1.0f, 0.25f, 0.75f);
-            forceTurningServo = clamp(0, 0f, 1.0f, 0f, 1f);
+//        forceTouchServo = clamp(gp1.right_trigger, 0f, 1.0f, 0.20f, 0.65f); // too small force
+            forceTouchServo = clamp(0, 0f, 1.0f, 0.20f, 0.70f);
+            forceTurningServo = clamp(0, 0f, 1.0f, 0f, 1.0f);
         } else {
             throw new UnsupportedOperationException("inverselyUpdate() method not implemented for additional Inverse!");
         }
@@ -129,7 +130,7 @@ public class GamepadManager implements Serializable, Cloneable {
             For Two Side servos
          */
             forceFrontLeftServo = clamp(-gp2.right_trigger, -1f, 0f, 0.5f, 1.0f); // 0.2-1
-            forceFrontRightServo = clamp(gp2.right_trigger, 0f, 1f, 0f, -0.5f); // 0.2-1
+            forceFrontRightServo = clamp(gp2.right_trigger, 0f, 1f, 0f, 0.5f); // 0.2-1
 
         /*
             For clips
@@ -201,16 +202,18 @@ public class GamepadManager implements Serializable, Cloneable {
                 Configuration.xPressedGamepad1 = false;
             }
 
-            forceArmLeftMotor = clamp(Configuration.spinArmLeftMotor, 0f, 1f, 0f, 1.0f);
-            forceArmRightMotor = clamp(-Configuration.spinArmRightMotor, 0f, 1f, 0f, 1.0f);
+            forceArmLeftMotor = clamp(Configuration.spinArmLeftMotor*0.5f, -1f, 1f, -1f, 1.0f);
+            forceArmRightMotor = clamp(-Configuration.spinArmRightMotor*0.5f, -1f, 1f, -1f, 1.0f);
 
             forcePushServo = clamp(-gp1.left_trigger, -1f, 0f, 0.75f, 1f);
-            forceTouchServo = clamp(gp1.right_trigger, 0f, 1.0f, 0.20f, 0.65f);
-            if (Configuration.leftPressedGamepad1) {
-                forceTurningServo = clamp(0, 0f, 1.0f, 0f, 1f);
-            } else if (Configuration.rightPressedGamepad1) {
-                forceTurningServo = clamp(1, 0f, 1.0f, 0f, 1f);
-            }
+//        forceTouchServo = clamp(gp1.right_trigger, 0f, 1.0f, 0.20f, 0.65f); // too small force
+            forceTouchServo = clamp(gp1.right_trigger, 0f, 1.0f, 0.20f, 0.70f);
+//        if (Configuration.leftPressedGamepad1) {
+//            forceTurningServo = clamp(0, 0f, 1.0f, 0f, 1f);
+//        } else if (Configuration.rightPressedGamepad1) {
+//            forceTurningServo = clamp(1, 0f, 1.0f, 0f, 1f);
+//        }
+            forceTurningServo = clamp(gp1.right_stick_x, 0f, 1.0f, 0f, 1.0f);
         } else {
             throw new UnsupportedOperationException("inverselyUpdate() method not implemented for additional Inverse!");
         }
@@ -254,8 +257,7 @@ public class GamepadManager implements Serializable, Cloneable {
             For Two Side servos
          */
         forceFrontLeftServo = clamp(-gp2.right_trigger, -1f, 0f, 0.5f, 1.0f); // 0.2-1
-        forceFrontRightServo = clamp(gp2.right_trigger, 0f, 1f, 0f, -0.5f); // 0.2-1
-//        forceFrontRightServo = clamp(gp2.right_trigger, 0f, 1f, 0.5f, 1.0f); // 1~0.2
+        forceFrontRightServo = clamp(gp2.right_trigger, 0f, 1f, 0f, 0.5f); // 0.2-1
 
         /*
             For clips
@@ -327,16 +329,18 @@ public class GamepadManager implements Serializable, Cloneable {
             Configuration.xPressedGamepad1 = false;
         }
 
-        forceArmLeftMotor = clamp(Configuration.spinArmLeftMotor, 0f, 1f, 0f, 1.0f);
-        forceArmRightMotor = clamp(-Configuration.spinArmRightMotor, 0f, 1f, 0f, 1.0f);
+        forceArmLeftMotor = clamp(Configuration.spinArmLeftMotor*0.5f, -1f, 1f, -1f, 1.0f);
+        forceArmRightMotor = clamp(-Configuration.spinArmRightMotor*0.5f, -1f, 1f, -1f, 1.0f);
 
         forcePushServo = clamp(-gp1.left_trigger, -1f, 0f, 0.75f, 1f);
-        forceTouchServo = clamp(gp1.right_trigger, 0f, 1.0f, 0.20f, 0.65f);
-        if (Configuration.leftPressedGamepad1) {
-            forceTurningServo = clamp(0, 0f, 1.0f, 0f, 1f);
-        } else if (Configuration.rightPressedGamepad1) {
-            forceTurningServo = clamp(1, 0f, 1.0f, 0f, 1f);
-        }
+//        forceTouchServo = clamp(gp1.right_trigger, 0f, 1.0f, 0.20f, 0.65f); // too small force
+        forceTouchServo = clamp(gp1.right_trigger, 0f, 1.0f, 0.20f, 0.70f);
+//        if (Configuration.leftPressedGamepad1) {
+//            forceTurningServo = clamp(0, 0f, 1.0f, 0f, 1f);
+//        } else if (Configuration.rightPressedGamepad1) {
+//            forceTurningServo = clamp(1, 0f, 1.0f, 0f, 1f);
+//        }
+        forceTurningServo = clamp(gp1.right_stick_x, 0f, 1.0f, 0f, 1.0f);
     }
     public double getForceFrontLeftMotor() {
         return forceFrontLeftMotor;

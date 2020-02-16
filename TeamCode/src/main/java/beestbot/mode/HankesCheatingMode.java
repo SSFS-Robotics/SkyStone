@@ -54,9 +54,11 @@ import beestbot.vision.SkyStoneVsionManager;
  * IMPORTANT: In order to use this OpMode, you need to obtain your own Vuforia license key as
  * is explained below.
  */
-@TeleOp(name = "HankesHardcodeMode", group = "Autonomous")
+@TeleOp(name = "HankesCheatingMode", group = "Autonomous")
 // TODO: WARNING - When there is an issue updating the opMode, try: Build->Clean Project
-public class HankesHardcodeMode extends BeestAbsurdMode {
+public class HankesCheatingMode extends BeestAbsurdMode {
+
+    private long startTime = 0;
 
     @Override
     public void setTeam() {
@@ -77,20 +79,42 @@ public class HankesHardcodeMode extends BeestAbsurdMode {
 
     @Override
     public void sub_init() {
-
+        this.startTime = System.nanoTime();
     }
 
     @Override
     public void sub_init_loop() {
-        // update sensor signal and refinement
-        if (Configuration.signals.size() > 10) {SensorSignals _ = Configuration.signals.poll();}
-        Configuration.signals.offer(Configuration.visionManager.fetch());
-        ArrayList<Integer> i = new ArrayList<>();
-        for (SensorSignals ss : Configuration.signals) {
-            i.add(ss.getValue());
+        int estimatedTime = (int)((double)(System.nanoTime() - startTime) / Math.pow(10, 9));
+        int positionNow = estimatedTime % 6;
+
+        switch (positionNow) {
+            case 0:
+                Configuration.signal = SensorSignals.SKYSTONE_AT_ONE;
+                telemetry.addData("CHEATING", "Finished Setting SensorSignals: " + Configuration.signal.toString());
+                break;
+            case 1:
+                Configuration.signal = SensorSignals.SKYSTONE_AT_TWO;
+                telemetry.addData("CHEATING", "Finished Setting SensorSignals: " + Configuration.signal.toString());
+                break;
+            case 2:
+                Configuration.signal = SensorSignals.SKYSTONE_AT_THREE;
+                telemetry.addData("CHEATING", "Finished Setting SensorSignals: " + Configuration.signal.toString());
+                break;
+            case 3:
+                Configuration.signal = SensorSignals.SKYSTONE_AT_FOUR;
+                telemetry.addData("CHEATING", "Finished Setting SensorSignals: " + Configuration.signal.toString());
+                break;
+            case 4:
+                Configuration.signal = SensorSignals.SKYSTONE_AT_FIVE;
+                telemetry.addData("CHEATING", "Finished Setting SensorSignals: " + Configuration.signal.toString());
+                break;
+            case 5:
+                Configuration.signal = SensorSignals.SKYSTONE_AT_SIX;
+                telemetry.addData("CHEATING", "Finished Setting SensorSignals: " + Configuration.signal.toString());
+                break;
+            default:
+                throw new IllegalArgumentException("What? YOU DON'T KNOW HOW TO CHEAT? STUPID!");
         }
-        Configuration.signal = SensorSignals.getSensorSignals(Util.mode(Util.convertIntegers(i)));
-        telemetry.addData("DEBUG", "Finished Setting SensorSignals: " + Configuration.signal.toString());
     }
 
     @Override
@@ -98,24 +122,27 @@ public class HankesHardcodeMode extends BeestAbsurdMode {
         try { // TODO: CAREFUL The stack will execute backward
             switch (Configuration.signal) {
                 case SKYSTONE_AT_SIX:
+                    Configuration.tasks.push(new Task(1.5, null, Task.getMethod("turnLeft"), Task.getMethod("stop"), telemetry)); // 90 degree
                     break;
                 case SKYSTONE_AT_FIVE:
+                    Configuration.tasks.push(new Task(1.6, null, Task.getMethod("turnRight"), Task.getMethod("stop"), telemetry)); // 90 degree
                     break;
                 case SKYSTONE_AT_FOUR:
+                    Configuration.tasks.push(new Task(2, null, Task.getMethod("moveFront"), Task.getMethod("stop"), telemetry));
                     break;
                 case SKYSTONE_AT_THREE:
+                    Configuration.tasks.push(new Task(1, null, Task.getMethod("moveFront"), Task.getMethod("stop"), telemetry));
                     break;
                 case SKYSTONE_AT_TWO:
+                    Configuration.tasks.push(new Task(2.5, null, Task.getMethod("moveFront"), Task.getMethod("stop"), telemetry));
                     break;
                 case SKYSTONE_AT_ONE:
-                    break;
+                    Configuration.tasks.push(new Task(1.5, null, Task.getMethod("moveFront"), Task.getMethod("stop"), telemetry));
                 case UNKNOWN:
-                    Configuration.tasks.push(new Task(1.5, null, Task.getMethod("turnRight"), Task.getMethod("stop"), telemetry)); // 90 degree
                     break;
                 case NOTHING:
-                    Configuration.tasks.push(new Task(1.5, null, Task.getMethod("turnRight"), Task.getMethod("stop"), telemetry)); // 90 degree
                     break;
-
+                default:
             }
         } catch (NoSuchMethodException e) {
             telemetry.addData("CRASH", "There is a crash when you tries to add tasks");
@@ -177,7 +204,6 @@ public class HankesHardcodeMode extends BeestAbsurdMode {
             }
 
         }
-
         motionManager.updateWithException(Configuration.gamepadManager);
         if (Configuration.currentTask != null) {
             telemetry.addData("TASK", "loop: " + Configuration.currentTask.getLoopMethod().getName());

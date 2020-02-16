@@ -30,6 +30,6 @@ public class RecordBlueQuarryWithVision extends HankesAbsurdIntelligence {
     @Override
     public void setVisionManager() {
 //        mineralVisionManager = new MineralVisionManager(hardwareMap, Configuration.INFER, Configuration.flashLight);
-        Configuration.visionManager = new SkyStoneVsionManager(hardwareMap, telemetry);
+        Configuration.visionManager = new SkyStoneVsionManager(hardwareMap, telemetry, true, false, false);
     }
 }

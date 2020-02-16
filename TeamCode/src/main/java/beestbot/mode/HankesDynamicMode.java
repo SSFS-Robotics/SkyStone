@@ -34,7 +34,9 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 
+import beestbot.io.GamepadManager;
 import beestbot.mode.AbsurdMode.BeestAbsurdMode;
+import beestbot.motion.MotionManager;
 import beestbot.state.SensorSignals;
 import beestbot.state.Side;
 import beestbot.state.State;
@@ -54,9 +56,9 @@ import beestbot.vision.SkyStoneVsionManager;
  * IMPORTANT: In order to use this OpMode, you need to obtain your own Vuforia license key as
  * is explained below.
  */
-@TeleOp(name = "HankesHardcodeMode", group = "Autonomous")
+@TeleOp(name = "HankesDynamicMode", group = "Autonomous")
 // TODO: WARNING - When there is an issue updating the opMode, try: Build->Clean Project
-public class HankesHardcodeMode extends BeestAbsurdMode {
+public class HankesDynamicMode extends BeestAbsurdMode {
 
     @Override
     public void setTeam() {
@@ -82,41 +84,28 @@ public class HankesHardcodeMode extends BeestAbsurdMode {
 
     @Override
     public void sub_init_loop() {
-        // update sensor signal and refinement
-        if (Configuration.signals.size() > 10) {SensorSignals _ = Configuration.signals.poll();}
-        Configuration.signals.offer(Configuration.visionManager.fetch());
-        ArrayList<Integer> i = new ArrayList<>();
-        for (SensorSignals ss : Configuration.signals) {
-            i.add(ss.getValue());
-        }
-        Configuration.signal = SensorSignals.getSensorSignals(Util.mode(Util.convertIntegers(i)));
-        telemetry.addData("DEBUG", "Finished Setting SensorSignals: " + Configuration.signal.toString());
     }
 
     @Override
     public void sub_start() {
         try { // TODO: CAREFUL The stack will execute backward
-            switch (Configuration.signal) {
-                case SKYSTONE_AT_SIX:
-                    break;
-                case SKYSTONE_AT_FIVE:
-                    break;
-                case SKYSTONE_AT_FOUR:
-                    break;
-                case SKYSTONE_AT_THREE:
-                    break;
-                case SKYSTONE_AT_TWO:
-                    break;
-                case SKYSTONE_AT_ONE:
-                    break;
-                case UNKNOWN:
-                    Configuration.tasks.push(new Task(1.5, null, Task.getMethod("turnRight"), Task.getMethod("stop"), telemetry)); // 90 degree
-                    break;
-                case NOTHING:
-                    Configuration.tasks.push(new Task(1.5, null, Task.getMethod("turnRight"), Task.getMethod("stop"), telemetry)); // 90 degree
-                    break;
-
-            }
+//            Configuration.tasks.push(new Task(1, null, Task.getMethod("goToSkyStone"), Task.getMethod("stop"), telemetry));
+//            Configuration.tasks.push(new Task(1, null, Task.getMethod("turnLeft"), Task.getMethod("stop"), telemetry));
+//            Configuration.tasks.push(new Task(1, null, Task.getMethod("moveBack"), Task.getMethod("stop"), telemetry));
+//            Configuration.tasks.push(new Task(1, null, Task.getMethod("releaseFoundation"), Task.getMethod("stop"), telemetry));
+//            Configuration.tasks.push(new Task(1, null, Task.getMethod("turnRight"), Task.getMethod("stop"), telemetry));
+//            Configuration.tasks.push(new Task(1, null, Task.getMethod("moveBack"), Task.getMethod("stop"), telemetry));
+//            Configuration.tasks.push(new Task(1, null, Task.getMethod("grabFoundation"), Task.getMethod("stop"), telemetry));
+//            Configuration.tasks.push(new Task(1, null, Task.getMethod("moveLeft"), Task.getMethod("stop"), telemetry));
+//            Configuration.tasks.push(new Task(1, null, Task.getMethod("turnLeft"), Task.getMethod("stop"), telemetry));
+//            Configuration.tasks.push(new Task(1, null, Task.getMethod("moveFront"), Task.getMethod("stop"), telemetry));
+//            Configuration.tasks.push(new Task(2, null, Task.getMethod("dropBlock"), Task.getMethod("stop"), telemetry));
+//            Configuration.tasks.push(new Task(3, null, Task.getMethod("moveFront"), Task.getMethod("stop"), telemetry));
+//            Configuration.tasks.push(new Task(1, null, Task.getMethod("moveRight"), Task.getMethod("stop"), telemetry));
+//            Configuration.tasks.push(new Task(2, null, Task.getMethod("grabBlock"), Task.getMethod("stop"), telemetry));
+//            Configuration.tasks.push(new Task(1, null, Task.getMethod("moveLeft"), Task.getMethod("stop"), telemetry));
+            Configuration.tasks.push(new Task(999, null, Task.getMethod("goToSkyStone"), Task.getMethod("stop"), telemetry));
+            Configuration.tasks.push(new Task(99, null, Task.getMethod("grabBlock"), Task.getMethod("stop"), telemetry));
         } catch (NoSuchMethodException e) {
             telemetry.addData("CRASH", "There is a crash when you tries to add tasks");
             telemetry.update();
@@ -126,14 +115,25 @@ public class HankesHardcodeMode extends BeestAbsurdMode {
 
     @Override
     public void sub_loop() {
+//        // update sensor signal and refinement
+//        if (Configuration.signals.size() > 10) {SensorSignals _ = Configuration.signals.poll();}
+//        Configuration.signals.offer(Configuration.visionManager.fetch());
+//        ArrayList<Integer> i = new ArrayList<>();
+//        for (SensorSignals ss : Configuration.signals) {
+//            i.add(ss.getValue());
+//        }
+//        Configuration.signal = SensorSignals.getSensorSignals(Util.mode(Util.convertIntegers(i)));
+//        telemetry.addData("DEBUG", "Finished Setting SensorSignals");
+
+
         // TASK MANAGER
         if (Configuration.currentTask == null) {
             if (!Configuration.tasks.empty()) {
                 // if there is no task: get next task and invoke init method
                 Task task = Configuration.tasks.pop(); // TODO: assume it is not Null
                 telemetry.addData("TASK", "No Current Task; Next: " + task.getLoopMethod().getName());
-                task.setStartTime(System.nanoTime()/Math.pow(10, 9));
-                task.setEndTime(System.nanoTime()/Math.pow(10, 9) + task.getLastTime());
+                task.setStartTime(time);
+                task.setEndTime(time + task.getLastTime());
                 Configuration.currentTask = task;
                 try {
                     // ref: https://www.math.uni-hamburg.de/doc/java/tutorial/reflect/object/invoke.html
@@ -154,21 +154,25 @@ public class HankesHardcodeMode extends BeestAbsurdMode {
             // if there is a task, if the task should end: invoke end method
             Task task = Configuration.currentTask;
             telemetry.addData("TASK", "Current Task: " + task.getLoopMethod().getName());
-            if (System.nanoTime()/Math.pow(10, 9) > task.getEndTime()) {
+            if (time > task.getEndTime()) {
                 telemetry.addData("TASK", "time("+ String.valueOf(System.nanoTime()/Math.pow(10, 9)) + ") > task.getEndTime(" + String.valueOf(task.getEndTime()) + ")");
                 try {
-                    if (task.getEndMethod() != null) {task.getEndMethod().invoke(task);}
+                    if (task.getEndMethod() != null) {
+                        task.getEndMethod().invoke(task);
+                    }
                 } catch (IllegalAccessException | InvocationTargetException e) {
                     telemetry.addData("CRASH", "There is a crash when you tries to getEndMethod()");
                     telemetry.update();
                     e.printStackTrace();
                 }
-                Configuration.currentTask = null;
+//                Configuration.currentTask = null;
                 // if there is a task, if the task should continue: invoke loop method
             } else {
-                telemetry.addData("TASK", "time("+ String.valueOf(System.nanoTime()/Math.pow(10, 9)) + ") < task.getEndTime(" + String.valueOf(task.getEndTime()) + ")");
+                telemetry.addData("TASK", "time("+ String.valueOf(time) + ") < task.getEndTime(" + String.valueOf(task.getEndTime()) + ")");
                 try {
-                    if (task.getLoopMethod() != null) {task.getLoopMethod().invoke(task);}
+                    if (task.getLoopMethod() != null) {
+                        task.getLoopMethod().invoke(task);
+                    }
                 } catch (IllegalAccessException | InvocationTargetException e) {
                     telemetry.addData("CRASH", "There is a crash when you tries to getLoopMethod()");
                     telemetry.update();

@@ -72,8 +72,8 @@ public class GamepadManager implements Serializable, Cloneable {
         /*
             For Two Compliant Wheels
          */
-            forceArmLeftMotor = clamp(Configuration.spinArmLeftMotor*0.5f, -1f, 1f, -1f, 1.0f);
-            forceArmRightMotor = clamp(-Configuration.spinArmRightMotor*0.5f, -1f, 1f, -1f, 1.0f);
+            forceArmLeftMotor = clamp(Configuration.spinArmLeftMotor*0.25f, -1f, 1f, -1f, 1.0f);
+            forceArmRightMotor = clamp(-Configuration.spinArmRightMotor*0.25f, -1f, 1f, -1f, 1.0f);
 
             forcePushServo = clamp(-0, -1f, 0f, 0.75f, 1f);
 //        forceTouchServo = clamp(gp1.right_trigger, 0f, 1.0f, 0.20f, 0.65f); // too small force
@@ -221,8 +221,8 @@ public class GamepadManager implements Serializable, Cloneable {
                 Configuration.xPressedGamepad1 = false;
             }
 
-            forceArmLeftMotor = clamp(Configuration.spinArmLeftMotor*0.5f, -1f, 1f, -1f, 1.0f);
-            forceArmRightMotor = clamp(-Configuration.spinArmRightMotor*0.5f, -1f, 1f, -1f, 1.0f);
+            forceArmLeftMotor = clamp(Configuration.spinArmLeftMotor*0.3f, -1f, 1f, -1f, 1.0f);
+            forceArmRightMotor = clamp(-Configuration.spinArmRightMotor*0.3f, -1f, 1f, -1f, 1.0f);
 
             forcePushServo = clamp(-gp1.left_trigger, -1f, 0f, 0.75f, 1f);
 //        forceTouchServo = clamp(gp1.right_trigger, 0f, 1.0f, 0.20f, 0.65f); // too small force
@@ -367,8 +367,8 @@ public class GamepadManager implements Serializable, Cloneable {
             Configuration.xPressedGamepad1 = false;
         }
 
-        forceArmLeftMotor = clamp(Configuration.spinArmLeftMotor*0.5f, -1f, 1f, -1f, 1.0f);
-        forceArmRightMotor = clamp(-Configuration.spinArmRightMotor*0.5f, -1f, 1f, -1f, 1.0f);
+        forceArmLeftMotor = clamp(Configuration.spinArmLeftMotor*0.25f, -1f, 1f, -1f, 1.0f);
+        forceArmRightMotor = clamp(-Configuration.spinArmRightMotor*0.25f, -1f, 1f, -1f, 1.0f);
 
         forcePushServo = clamp(-gp1.left_trigger, -1f, 0f, 0.75f, 1f);
 //        forceTouchServo = clamp(gp1.right_trigger, 0f, 1.0f, 0.20f, 0.65f); // too small force

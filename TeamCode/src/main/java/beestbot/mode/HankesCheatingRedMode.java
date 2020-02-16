@@ -54,9 +54,9 @@ import beestbot.vision.SkyStoneVsionManager;
  * IMPORTANT: In order to use this OpMode, you need to obtain your own Vuforia license key as
  * is explained below.
  */
-@TeleOp(name = "HankesCheatingMode", group = "Autonomous")
+@TeleOp(name = "HankesCheatingRedMode", group = "Autonomous")
 // TODO: WARNING - When there is an issue updating the opMode, try: Build->Clean Project
-public class HankesCheatingMode extends BeestAbsurdMode {
+public class HankesCheatingRedMode extends BeestAbsurdMode {
 
     private long startTime = 0;
 
@@ -122,7 +122,10 @@ public class HankesCheatingMode extends BeestAbsurdMode {
         try { // TODO: CAREFUL The stack will execute backward
             switch (Configuration.signal) { // prepare
                 case SKYSTONE_AT_SIX:
+                    Configuration.tasks.push(new Task(4.5, null, Task.getMethod("moveBack"), Task.getMethod("stop"), telemetry)); // move foundation
+
                     // grab
+                    Configuration.tasks.push(new Task(0.1, null, Task.getMethod("releaseFoundation"), Task.getMethod("stop"), telemetry)); // grab
                     Configuration.tasks.push(new Task(0.4, null, Task.getMethod("moveBack"), Task.getMethod("stop"), telemetry)); // move foundation
                     Configuration.tasks.push(new Task(0.1, null, Task.getMethod("grabFoundation"), Task.getMethod("stop"), telemetry)); // grab
 
@@ -130,7 +133,9 @@ public class HankesCheatingMode extends BeestAbsurdMode {
                     Configuration.tasks.push(new Task(1, null, Task.getMethod("moveFront"), Task.getMethod("stop"), telemetry)); // go to foundation
                     Configuration.tasks.push(new Task(0.05, null, Task.getMethod("turnRight"), Task.getMethod("stop"), telemetry)); // 90 back
                     Configuration.tasks.push(new Task(1.5, null, Task.getMethod("turnLeft"), Task.getMethod("stop"), telemetry)); // left 90 degree
+
                     // to foundation // should be 8
+                    Configuration.tasks.push(new Task(0.1, null, Task.getMethod("dropBlock"), Task.getMethod("stop"), telemetry)); // drop block
                     Configuration.tasks.push(new Task(8, null, Task.getMethod("moveFront"), Task.getMethod("stop"), telemetry)); // go to foundation
 
                     // go back
@@ -152,7 +157,10 @@ public class HankesCheatingMode extends BeestAbsurdMode {
                     Configuration.tasks.push(new Task(0.1, null, Task.getMethod("moveLeft"), Task.getMethod("stop"), telemetry)); // just get out
                     break;
                 case SKYSTONE_AT_FIVE:
+                    Configuration.tasks.push(new Task(4.5, null, Task.getMethod("moveBack"), Task.getMethod("stop"), telemetry)); // move foundation
+
                     // grab
+                    Configuration.tasks.push(new Task(0.1, null, Task.getMethod("releaseFoundation"), Task.getMethod("stop"), telemetry)); // grab
                     Configuration.tasks.push(new Task(0.4, null, Task.getMethod("moveBack"), Task.getMethod("stop"), telemetry)); // move foundation
                     Configuration.tasks.push(new Task(0.1, null, Task.getMethod("grabFoundation"), Task.getMethod("stop"), telemetry)); // grab
 
@@ -160,7 +168,9 @@ public class HankesCheatingMode extends BeestAbsurdMode {
                     Configuration.tasks.push(new Task(1, null, Task.getMethod("moveFront"), Task.getMethod("stop"), telemetry)); // go to foundation
                     Configuration.tasks.push(new Task(0.05, null, Task.getMethod("turnRight"), Task.getMethod("stop"), telemetry)); // 90 back
                     Configuration.tasks.push(new Task(1.5, null, Task.getMethod("turnLeft"), Task.getMethod("stop"), telemetry)); // left 90 degree
+
                     // to foundation // should be 8
+                    Configuration.tasks.push(new Task(0.1, null, Task.getMethod("dropBlock"), Task.getMethod("stop"), telemetry)); // drop block
                     Configuration.tasks.push(new Task(8, null, Task.getMethod("moveFront"), Task.getMethod("stop"), telemetry)); // go to foundation
 
                     // go back
@@ -182,7 +192,10 @@ public class HankesCheatingMode extends BeestAbsurdMode {
                     Configuration.tasks.push(new Task(0.1, null, Task.getMethod("moveLeft"), Task.getMethod("stop"), telemetry)); // just get out
                     break;
                 case SKYSTONE_AT_FOUR:
+                    Configuration.tasks.push(new Task(4.5, null, Task.getMethod("moveBack"), Task.getMethod("stop"), telemetry)); // move foundation
+
                     // grab
+                    Configuration.tasks.push(new Task(0.1, null, Task.getMethod("releaseFoundation"), Task.getMethod("stop"), telemetry)); // grab
                     Configuration.tasks.push(new Task(0.4, null, Task.getMethod("moveBack"), Task.getMethod("stop"), telemetry)); // move foundation
                     Configuration.tasks.push(new Task(0.1, null, Task.getMethod("grabFoundation"), Task.getMethod("stop"), telemetry)); // grab
 
@@ -190,7 +203,9 @@ public class HankesCheatingMode extends BeestAbsurdMode {
                     Configuration.tasks.push(new Task(1, null, Task.getMethod("moveFront"), Task.getMethod("stop"), telemetry)); // go to foundation
                     Configuration.tasks.push(new Task(0.05, null, Task.getMethod("turnRight"), Task.getMethod("stop"), telemetry)); // 90 back
                     Configuration.tasks.push(new Task(1.5, null, Task.getMethod("turnLeft"), Task.getMethod("stop"), telemetry)); // left 90 degree
+
                     // to foundation // should be 8
+                    Configuration.tasks.push(new Task(0.1, null, Task.getMethod("dropBlock"), Task.getMethod("stop"), telemetry)); // drop block
                     Configuration.tasks.push(new Task(8, null, Task.getMethod("moveFront"), Task.getMethod("stop"), telemetry)); // go to foundation
 
                     // go back
@@ -212,7 +227,10 @@ public class HankesCheatingMode extends BeestAbsurdMode {
                     Configuration.tasks.push(new Task(0.1, null, Task.getMethod("moveLeft"), Task.getMethod("stop"), telemetry)); // just get out
                     break;
                 case SKYSTONE_AT_THREE: // tested
+                    Configuration.tasks.push(new Task(4.5, null, Task.getMethod("moveBack"), Task.getMethod("stop"), telemetry)); // move foundation
+
                     // grab
+                    Configuration.tasks.push(new Task(0.1, null, Task.getMethod("releaseFoundation"), Task.getMethod("stop"), telemetry)); // grab
                     Configuration.tasks.push(new Task(0.4, null, Task.getMethod("moveBack"), Task.getMethod("stop"), telemetry)); // move foundation
                     Configuration.tasks.push(new Task(0.1, null, Task.getMethod("grabFoundation"), Task.getMethod("stop"), telemetry)); // grab
 
@@ -220,7 +238,9 @@ public class HankesCheatingMode extends BeestAbsurdMode {
                     Configuration.tasks.push(new Task(1, null, Task.getMethod("moveFront"), Task.getMethod("stop"), telemetry)); // go to foundation
                     Configuration.tasks.push(new Task(0.05, null, Task.getMethod("turnRight"), Task.getMethod("stop"), telemetry)); // 90 back
                     Configuration.tasks.push(new Task(1.5, null, Task.getMethod("turnLeft"), Task.getMethod("stop"), telemetry)); // left 90 degree
+
                     // to foundation // should be 8
+                    Configuration.tasks.push(new Task(0.1, null, Task.getMethod("dropBlock"), Task.getMethod("stop"), telemetry)); // drop block
                     Configuration.tasks.push(new Task(8, null, Task.getMethod("moveFront"), Task.getMethod("stop"), telemetry)); // go to foundation
 
                     // go back
@@ -243,7 +263,10 @@ public class HankesCheatingMode extends BeestAbsurdMode {
 //                    Configuration.tasks.push(new Task(2, null, Task.getMethod("moveFront"), Task.getMethod("stop"), telemetry)); // 24 inches
                     break;
                 case SKYSTONE_AT_TWO: // tested
+                    Configuration.tasks.push(new Task(4.5, null, Task.getMethod("moveBack"), Task.getMethod("stop"), telemetry)); // move foundation
+
                     // grab
+                    Configuration.tasks.push(new Task(0.1, null, Task.getMethod("releaseFoundation"), Task.getMethod("stop"), telemetry)); // grab
                     Configuration.tasks.push(new Task(0.4, null, Task.getMethod("moveBack"), Task.getMethod("stop"), telemetry)); // move foundation
                     Configuration.tasks.push(new Task(0.1, null, Task.getMethod("grabFoundation"), Task.getMethod("stop"), telemetry)); // grab
 
@@ -273,7 +296,16 @@ public class HankesCheatingMode extends BeestAbsurdMode {
                     Configuration.tasks.push(new Task(0.1, null, Task.getMethod("moveLeft"), Task.getMethod("stop"), telemetry)); // just get out
                     break;
                 case SKYSTONE_AT_ONE: // testing
+                    // TODO test here
+                    Configuration.tasks.push(new Task(4.5, null, Task.getMethod("moveBack"), Task.getMethod("stop"), telemetry)); // move foundation
                     // grab
+                    Configuration.tasks.push(new Task(0.1, null, Task.getMethod("releaseFoundation"), Task.getMethod("stop"), telemetry)); // grab
+
+                    // TODO: test here
+                    Configuration.tasks.push(new Task(0.05, null, Task.getMethod("turnLeft"), Task.getMethod("stop"), telemetry)); // 90 back
+                    Configuration.tasks.push(new Task(1.4, null, Task.getMethod("turnRight"), Task.getMethod("stop"), telemetry)); // right 90 degree
+
+                    // TODO: test here
                     Configuration.tasks.push(new Task(0.4, null, Task.getMethod("moveBack"), Task.getMethod("stop"), telemetry)); // move foundation
                     Configuration.tasks.push(new Task(0.1, null, Task.getMethod("grabFoundation"), Task.getMethod("stop"), telemetry)); // grab
 
@@ -281,26 +313,28 @@ public class HankesCheatingMode extends BeestAbsurdMode {
                     Configuration.tasks.push(new Task(1, null, Task.getMethod("moveFront"), Task.getMethod("stop"), telemetry)); // go to foundation
                     Configuration.tasks.push(new Task(0.05, null, Task.getMethod("turnRight"), Task.getMethod("stop"), telemetry)); // 90 back
                     Configuration.tasks.push(new Task(1.5, null, Task.getMethod("turnLeft"), Task.getMethod("stop"), telemetry)); // left 90 degree
+
                     // to foundation // should be 8
+                    Configuration.tasks.push(new Task(0.1, null, Task.getMethod("dropBlock"), Task.getMethod("stop"), telemetry)); // drop block
                     Configuration.tasks.push(new Task(8, null, Task.getMethod("moveFront"), Task.getMethod("stop"), telemetry)); // go to foundation
 
                     // go back
-                    Configuration.tasks.push(new Task(1.5, null, Task.getMethod("moveRight"), Task.getMethod("stop"), telemetry)); // move back little bit
-
-                    // grab block
-                    Configuration.tasks.push(new Task(1, null, Task.getMethod("grabBlock"), Task.getMethod("stop"), telemetry)); // grabBlock
-
-                    // go to correct position
-                    Configuration.tasks.push(new Task(0.35*3 + 0.20, null, Task.getMethod("moveBack"), Task.getMethod("stop"), telemetry)); // grabBlock
-
-                    // go to skystones
-                    Configuration.tasks.push(new Task(0.05, null, Task.getMethod("turnLeft"), Task.getMethod("stop"), telemetry)); // 90 back
-                    Configuration.tasks.push(new Task(1.4, null, Task.getMethod("turnRight"), Task.getMethod("stop"), telemetry)); // right 90 degree
-                    Configuration.tasks.push(new Task(0.1, null, Task.getMethod("moveBack"), Task.getMethod("stop"), telemetry)); // go to skystone back
-                    Configuration.tasks.push(new Task(2.2, null, Task.getMethod("moveFront"), Task.getMethod("stop"), telemetry)); // go to skystone
-                    Configuration.tasks.push(new Task(0.05, null, Task.getMethod("turnRight"), Task.getMethod("stop"), telemetry)); // 90 back
-                    Configuration.tasks.push(new Task(1.5, null, Task.getMethod("turnLeft"), Task.getMethod("stop"), telemetry)); // left 90 degree
-                    Configuration.tasks.push(new Task(0.1, null, Task.getMethod("moveLeft"), Task.getMethod("stop"), telemetry)); // just get out
+//                    Configuration.tasks.push(new Task(1.5, null, Task.getMethod("moveRight"), Task.getMethod("stop"), telemetry)); // move back little bit
+//
+//                    // grab block
+//                    Configuration.tasks.push(new Task(1, null, Task.getMethod("grabBlock"), Task.getMethod("stop"), telemetry)); // grabBlock
+//
+//                    // go to correct position
+//                    Configuration.tasks.push(new Task(0.35*3 + 0.20, null, Task.getMethod("moveBack"), Task.getMethod("stop"), telemetry)); // grabBlock
+//
+//                    // go to skystones
+//                    Configuration.tasks.push(new Task(0.05, null, Task.getMethod("turnLeft"), Task.getMethod("stop"), telemetry)); // 90 back
+//                    Configuration.tasks.push(new Task(1.4, null, Task.getMethod("turnRight"), Task.getMethod("stop"), telemetry)); // right 90 degree
+//                    Configuration.tasks.push(new Task(0.1, null, Task.getMethod("moveBack"), Task.getMethod("stop"), telemetry)); // go to skystone back
+//                    Configuration.tasks.push(new Task(2.2, null, Task.getMethod("moveFront"), Task.getMethod("stop"), telemetry)); // go to skystone
+//                    Configuration.tasks.push(new Task(0.05, null, Task.getMethod("turnRight"), Task.getMethod("stop"), telemetry)); // 90 back
+//                    Configuration.tasks.push(new Task(1.5, null, Task.getMethod("turnLeft"), Task.getMethod("stop"), telemetry)); // left 90 degree
+//                    Configuration.tasks.push(new Task(0.1, null, Task.getMethod("moveLeft"), Task.getMethod("stop"), telemetry)); // just get out
                 case UNKNOWN:
                     break;
                 case NOTHING:

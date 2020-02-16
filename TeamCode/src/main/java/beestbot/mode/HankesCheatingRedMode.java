@@ -42,6 +42,7 @@ import beestbot.state.Task;
 import beestbot.state.Team;
 import beestbot.util.Configuration;
 import beestbot.util.Util;
+import beestbot.vision.NullVsionManager;
 import beestbot.vision.SkyStoneVsionManager;
 
 /**
@@ -74,7 +75,7 @@ public class HankesCheatingRedMode extends BeestAbsurdMode {
     }
     @Override
     public void setVisionManager() {
-        Configuration.visionManager = new SkyStoneVsionManager(hardwareMap, telemetry, true, false, false);
+        Configuration.visionManager = new NullVsionManager(hardwareMap, telemetry);
     }
 
     @Override
@@ -86,7 +87,6 @@ public class HankesCheatingRedMode extends BeestAbsurdMode {
     public void sub_init_loop() {
         int estimatedTime = (int)((double)(System.nanoTime() - startTime) / Math.pow(10, 9));
         int positionNow = estimatedTime % 6;
-
         switch (positionNow) {
             case 0:
                 Configuration.signal = SensorSignals.SKYSTONE_AT_ONE;
@@ -120,18 +120,19 @@ public class HankesCheatingRedMode extends BeestAbsurdMode {
     @Override
     public void sub_start() {
         try {
+
             // park
             Configuration.tasks.push(new Task(4.5, null, Task.getMethod("moveBack"), Task.getMethod("stop"), telemetry)); // move foundation
 
             // turning and push foundation
-            Configuration.tasks.push(new Task(0.1, null, Task.getMethod("releaseFoundation"), Task.getMethod("stop"), telemetry)); // grab
-            Configuration.tasks.push(new Task(2, null, Task.getMethod("moveFront"), Task.getMethod("stop"), telemetry)); // move foundation
+            Configuration.tasks.push(new Task(0.3, null, Task.getMethod("releaseFoundation"), Task.getMethod("stop"), telemetry)); // grab
+            Configuration.tasks.push(new Task(1.0, null, Task.getMethod("moveFront"), Task.getMethod("stop"), telemetry)); // move foundation
             Configuration.tasks.push(new Task(0.05, null, Task.getMethod("turnLeft"), Task.getMethod("stop"), telemetry)); // 90 back
             Configuration.tasks.push(new Task(1.6, null, Task.getMethod("turnRight"), Task.getMethod("stop"), telemetry)); // right 90 degree
 
             // grab and move back
-            Configuration.tasks.push(new Task(2.5, null, Task.getMethod("moveBack"), Task.getMethod("stop"), telemetry)); // move foundation
-            Configuration.tasks.push(new Task(0.1, null, Task.getMethod("grabFoundation"), Task.getMethod("stop"), telemetry)); // grab
+            Configuration.tasks.push(new Task(2.0, null, Task.getMethod("moveBack"), Task.getMethod("stop"), telemetry)); // move foundation
+            Configuration.tasks.push(new Task(0.3, null, Task.getMethod("grabFoundation"), Task.getMethod("stop"), telemetry)); // grab
 
             // left and push
             Configuration.tasks.push(new Task(2.5, null, Task.getMethod("moveFront"), Task.getMethod("stop"), telemetry)); // go to foundation
@@ -151,10 +152,10 @@ public class HankesCheatingRedMode extends BeestAbsurdMode {
             // go to correct position
             switch (Configuration.signal) {
                 case SKYSTONE_AT_SIX:
-                    Configuration.tasks.push(new Task(0.35*0 + 0.20, null, Task.getMethod("moveFront"), Task.getMethod("stop"), telemetry)); // grabBlock
+                    Configuration.tasks.push(new Task(0.35*1 + 0.20, null, Task.getMethod("moveFront"), Task.getMethod("stop"), telemetry)); // grabBlock
                     break;
                 case SKYSTONE_AT_FIVE:
-                    Configuration.tasks.push(new Task(0.35*1 + 0.20, null, Task.getMethod("moveFront"), Task.getMethod("stop"), telemetry)); // grabBlock
+                    Configuration.tasks.push(new Task(0.35*0 + 0.20, null, Task.getMethod("moveFront"), Task.getMethod("stop"), telemetry)); // grabBlock
                     break;
                 case SKYSTONE_AT_FOUR:
                     Configuration.tasks.push(new Task(0.35*0 + 0.20, null, Task.getMethod("moveBack"), Task.getMethod("stop"), telemetry)); // grabBlock
@@ -183,6 +184,8 @@ public class HankesCheatingRedMode extends BeestAbsurdMode {
             Configuration.tasks.push(new Task(0.05, null, Task.getMethod("turnRight"), Task.getMethod("stop"), telemetry)); // 90 back
             Configuration.tasks.push(new Task(1.5, null, Task.getMethod("turnLeft"), Task.getMethod("stop"), telemetry)); // left 90 degree
             Configuration.tasks.push(new Task(0.1, null, Task.getMethod("moveLeft"), Task.getMethod("stop"), telemetry)); // just get out
+
+            Configuration.tasks.push(new Task(0.3, null, Task.getMethod("releaseFoundation"), Task.getMethod("stop"), telemetry)); // grab
         } catch (NoSuchMethodException e) {
             telemetry.addData("CRASH", "There is a crash when you tries to add tasks");
             telemetry.update();
